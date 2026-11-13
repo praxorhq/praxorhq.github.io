@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Внедрение ИИ в разработку: пошаговый план на 3 месяца — Праксор</title>
+<meta name="description" content="План внедрения ИИ-агентов в разработку ПО на пилотной команде: что говорят исследования, чек-лист готовности, этапы по неделям, роли, политика использования AI, замер эффекта и причины, по которым пилоты проваливаются." />
+<link rel="canonical" href="https://praxor.ru/vnedrenie-ii-v-razrabotku/" />
+<meta property="og:title" content="Внедрение ИИ в разработку: пошаговый план на 3 месяца — Праксор" />
+<meta property="og:description" content="План внедрения ИИ-агентов в разработку ПО на пилотной команде: что говорят исследования, чек-лист готовности, этапы по неделям, роли, политика использования AI, замер эффекта и причины, по которым пилоты проваливаются." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://praxor.ru/vnedrenie-ii-v-razrabotku/" />
+<meta property="og:site_name" content="Праксор" />
+<meta property="og:locale" content="ru_RU" />
+<meta property="og:image" content="https://praxor.ru/og/vnedrenie-ii-v-razrabotku.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:card" content="summary_large_image" />
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "Article",
+   "@id": "https://praxor.ru/vnedrenie-ii-v-razrabotku/#article",
+   "headline": "Как внедрить ИИ в разработку: план на 3 месяца",
+   "description": "План внедрения ИИ-агентов в разработку ПО на пилотной команде: что говорят исследования, чек-лист готовности, этапы по неделям, роли, политика использования AI, замер эффекта и причины, по которым пилоты проваливаются.",
+   "inLanguage": "ru",
+   "datePublished": "2026-11-12",
+   "dateModified": "2026-11-12",
+   "mainEntityOfPage": "https://praxor.ru/vnedrenie-ii-v-razrabotku/",
+   "author": {
+    "@id": "https://praxor.ru/#org"
+   },
+   "publisher": {
+    "@id": "https://praxor.ru/#org"
+   },
+   "about": [
+    "Внедрение ИИ в разработку",
+    "ИИ в разработке ПО",
+    "Внедрение ИИ-агентов",
+    "AI-трансформация",
+    "AI SDLC"
+   ]
+  },
+  {
+   "@type": "BreadcrumbList",
+   "itemListElement": [
+    {
+     "@type": "ListItem",
+     "position": 1,
+     "name": "Праксор",
+     "item": "https://praxor.ru/"
+    },
+    {
+     "@type": "ListItem",
+     "position": 2,
+     "name": "AI SDLC",
+     "item": "https://praxor.ru/ai-sdlc/"
+    },
+    {
+     "@type": "ListItem",
+     "position": 3,
+     "name": "Внедрение ИИ в разработку",
+     "item": "https://praxor.ru/vnedrenie-ii-v-razrabotku/"
+    }
+   ]
+  },
+  {
+   "@type": "ProfessionalService",
+   "@id": "https://praxor.ru/#org",
+   "name": "Праксор",
+   "url": "https://praxor.ru/"
+  },
+  {
+   "@type": "FAQPage",
+   "mainEntity": [
+    {
+     "@type": "Question",
+     "name": "Сколько времени занимает внедрение ИИ в разработку?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Пилот на одной команде — около трёх месяцев: около месяца на диагностику, harness и запуск, два месяца сопровождения, затем ревью с замером. Следующие команды запускаются быстрее, потому что берут готовые правила и проверки."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "С какого инструмента начать внедрение ИИ-агентов?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "С того, который разрешит ИБ и который поддерживает агентный режим, правила в репозитории и работу через корпоративный шлюз. Правила, спеки и проверки переносятся между инструментами, поэтому выбор агента можно пересмотреть после пилота."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Можно ли внедрить ИИ в разработку без отправки кода наружу?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Да. Используют российские ассистенты с установкой в контуре компании или открытые модели на своих серверах, подключённые через LLM-шлюз. Открытые модели обычно слабее лучших облачных, поэтому их проверяют на задачах из своего бэклога до выбора."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Как понять, что внедрение окупилось?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Сравнить метрики пилотной команды со стартовым замером: lead time, частоту релизов, долю неудачных изменений, время ревью и долю переделок. Плюс расход на модели в пересчёте на задачу. Число PR и строк кода для этого не подходит."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Нужно ли обучать всю компанию сразу?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Нет. Обучение без изменения процесса даёт ускорение отдельных людей. Эффективнее обучить пилотную команду на её задачах, а затем переносить процесс на следующие команды силами своих инженеров."
+     }
+    }
+   ]
+  }
+ ]
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<script type="text/javascript">
+    (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=112577477', 'ym');
+
+    ym(112577477, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/112577477" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBFAF8; }
+  * { box-sizing: border-box; }
+  body { -webkit-font-smoothing: antialiased; }
+  a { color: #1B4DE4; text-decoration: none; }
+  a:hover { color: #0E1116; }
+  ::selection { background: #1B4DE4; color: #ffffff; }
+  input, textarea, button { font-family: inherit; }
+  .cta-dark:hover { background: #1B4DE4 !important; }
+  .cta-ghost:hover { border-color: #0E1116 !important; }
+  .nav-cta:hover { background: #0E1116 !important; color: #FBFAF8 !important; }
+  .intent-opt { text-align: left; cursor: pointer; width: 100%; display: block; background: transparent; border: none; border-top: 1px solid #E2DFDA; border-left: 3px solid transparent; padding: 16px 0 16px 15px; border-radius: 0; }
+  .intent-opt[aria-pressed="true"] { border-top-color: #0E1116; border-left-color: #1B4DE4; }
+  @media (max-width: 1100px) { .v2-nav-wide { display: none !important; } }
+  @media (min-width: 1101px) { .v2-nav-slim { display: none !important; } }
+  @media (max-width: 1000px) {
+    .v2-pad { padding-left: 20px !important; padding-right: 20px !important; }
+    .v2-sec { padding-top: 72px !important; padding-bottom: 72px !important; }
+    .v2-split { grid-template-columns: 1fr !important; gap: 28px !important; }
+    .v2-4 { grid-template-columns: 1fr 1fr !important; }
+    .v2-3 { grid-template-columns: 1fr 1fr !important; gap: 28px !important; }
+    .v2-h1 { font-size: 40px !important; }
+    .v2-h2 { font-size: 30px !important; }
+    .v2-lead { font-size: 20px !important; }
+    .v2-status { grid-template-columns: 1fr 1fr !important; }
+    .v2-scroll { overflow: auto hidden !important; }
+    .v2-axis { min-width: 660px !important; }
+    .v2-3 p { font-size: 14px !important; }
+  }
+  @media (max-width: 620px) {
+    .v2-3 { grid-template-columns: 1fr !important; }
+    .v2-4 { grid-template-columns: 1fr !important; }
+    .v2-nav-slim { display: none !important; }
+  }
+</style>
+
+<style>
+  .a-wrap { max-width: 1280px; margin: 0 auto; padding: 0 40px; border-left: 1px solid #E2DFDA; border-right: 1px solid #E2DFDA; }
+  .a-crumbs { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.06em; color: #8B939C; padding-top: 40px; }
+  .a-crumbs a { color: #5B646E; }
+  .a-crumbs a:hover { color: #1B4DE4; }
+  .a-h1 { font-size: 60px; font-weight: 400; line-height: 1.04; letter-spacing: -2px; margin: 40px 0 0; max-width: 20ch; text-wrap: pretty; }
+  .a-lead { font-size: 22px; font-weight: 300; line-height: 1.5; letter-spacing: -0.3px; color: #3A4149; margin: 32px 0 0; max-width: 62ch; text-wrap: pretty; }
+  .a-meta { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.06em; color: #8B939C; margin-top: 32px; padding-bottom: 56px; }
+  .a-grid { display: grid; grid-template-columns: 3fr 9fr; gap: 56px; border-top: 1px solid #E2DFDA; padding: 56px 0 112px; }
+  .a-toc { position: sticky; top: 92px; align-self: start; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; line-height: 1.5; letter-spacing: 0.03em; }
+  .a-toc-t { color: #8B939C; text-transform: uppercase; letter-spacing: 0.09em; margin-bottom: 14px; }
+  .a-toc a { display: block; color: #3A4149; padding: 7px 0; border-top: 1px solid #E2DFDA; }
+  .a-toc a:hover { color: #1B4DE4; }
+  .a-body { font-size: 18px; line-height: 1.7; color: #1F252C; max-width: 70ch; min-width: 0; overflow-wrap: break-word; }
+  .a-body h2 { font-size: 34px; font-weight: 400; line-height: 1.12; letter-spacing: -1px; color: #0E1116; margin: 72px 0 0; scroll-margin-top: 84px; text-wrap: pretty; }
+  .a-body h2:first-child { margin-top: 0; }
+  .a-body h3 { font-size: 22px; font-weight: 500; line-height: 1.3; letter-spacing: -0.4px; color: #0E1116; margin: 40px 0 0; }
+  .a-body p { margin: 18px 0 0; }
+  .a-body ul, .a-body ol { margin: 18px 0 0; padding-left: 22px; }
+  .a-body li { margin: 8px 0 0; }
+  .a-body li::marker { color: #8B939C; }
+  .a-body strong { font-weight: 600; color: #0E1116; }
+  .a-body a { border-bottom: 1px solid rgba(27,77,228,0.3); }
+  .a-body a:hover { border-bottom-color: #0E1116; }
+  .a-body code { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 0.86em; background: #F1EFEB; padding: 1px 5px; }
+  .a-body pre { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 14px; line-height: 1.6; background: #0E1116; color: #E6E3DD; padding: 24px; margin: 24px 0 0; overflow-x: auto; }
+  .a-body pre code { background: none; padding: 0; font-size: inherit; color: inherit; }
+  .a-body table { width: 100%; border-collapse: collapse; margin: 24px 0 0; font-size: 16px; line-height: 1.5; }
+  .a-body th { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; font-weight: 400; letter-spacing: 0.08em; text-transform: uppercase; color: #8B939C; text-align: left; padding: 0 16px 10px 0; }
+  .a-body td { border-top: 1px solid #E2DFDA; padding: 12px 16px 12px 0; vertical-align: top; }
+  .a-tbl { overflow-x: auto; }
+  .a-note { border-left: 3px solid #1B4DE4; padding: 4px 0 4px 20px; margin: 28px 0 0; color: #3A4149; }
+  .a-check { margin: 24px 0 0; border-top: 1px solid #E2DFDA; }
+  .a-check label { display: grid; grid-template-columns: 22px 1fr; gap: 14px; padding: 14px 0; border-bottom: 1px solid #E2DFDA; cursor: pointer; font-size: 16px; line-height: 1.55; }
+  .a-check input { width: 18px; height: 18px; margin: 4px 0 0; accent-color: #1B4DE4; cursor: pointer; }
+  .a-check label:has(input:checked) span { color: #5B646E; }
+  .a-check-res { margin: 18px 0 0; padding: 16px 20px; background: #F1EFEB; font-size: 16px; line-height: 1.5; }
+  .a-prx { background: #0E1116; color: #FBFAF8; padding: 32px; margin: 48px 0 0; }
+  .a-prx h3 { color: #FBFAF8; margin: 0; }
+  .a-prx p { color: rgba(251,250,248,0.72); }
+  .a-prx a { color: #FBFAF8; border-bottom-color: rgba(251,250,248,0.4); }
+  .a-next { margin-top: 72px; border-top: 1px solid #0E1116; padding-top: 24px; }
+  .a-next-t { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.09em; text-transform: uppercase; color: #8B939C; }
+  .a-next a { display: block; font-size: 21px; letter-spacing: -0.4px; line-height: 1.35; color: #0E1116; padding: 16px 0; border-top: 1px solid #E2DFDA; border-bottom: none; }
+  .a-next a:first-of-type { border-top: none; }
+  .a-next a:hover { color: #1B4DE4; }
+  .a-next span { display: block; font-size: 15px; color: #5B646E; letter-spacing: 0; margin-top: 4px; }
+  .a-faq h3 { margin-top: 28px; }
+  .a-body h2#all + .a-next { margin-top: 28px; }
+  .a-body h2#all ~ .a-next { margin-top: 40px; }
+  @media (max-width: 1000px) {
+    .a-wrap { padding-left: 20px; padding-right: 20px; }
+    .a-h1 { font-size: 38px; letter-spacing: -1.2px; }
+    .a-lead { font-size: 19px; }
+    .a-grid { grid-template-columns: 1fr; gap: 0; padding-top: 40px; }
+    .a-toc { display: none; }
+    .a-body { font-size: 17px; }
+    .a-body h2 { font-size: 27px; margin-top: 56px; }
+    .a-prx { padding: 24px; }
+  }
+  @media (max-width: 620px) {
+    .a-body table, .a-body tbody, .a-body tr, .a-body td { display: block; width: 100%; }
+    .a-body tr:first-child { display: none; }
+    .a-body tr { border-top: 1px solid #E2DFDA; padding: 14px 0; }
+    .a-body td { border: none; padding: 2px 0; }
+    .a-body td:first-child { font-weight: 600; color: #0E1116; }
+  }
+</style>
+</head>
+<body>
+<div style="font-family: 'Geist', -apple-system, system-ui, 'Segoe UI', Helvetica, sans-serif; background: #FBFAF8; color: #0E1116; min-height: 100vh; overflow-x: hidden;">
+
+  <div style="position: sticky; top: 0; z-index: 60; background: rgba(251,250,248,0.88); backdrop-filter: blur(10px); border-bottom: 1px solid #E2DFDA;">
+    <div class="v2-pad" style="max-width: 1280px; margin: 0 auto; padding: 0 40px; display: flex; align-items: center; height: 60px; gap: 40px;">
+      <a href="/" style="display: flex; align-items: center; gap: 10px; color: #0E1116;">
+        <span style="width: 14px; height: 14px; border: 1.5px solid #0E1116; display: block; position: relative;">
+          <span style="position: absolute; left: 3px; top: 3px; width: 5px; height: 5px; background: #1B4DE4; display: block;"></span>
+        </span>
+        <span style="font-size: 16px; font-weight: 500; letter-spacing: -0.3px;">Праксор</span>
+      </a>
+      <div class="v2-nav-wide" style="display: flex; align-items: center; gap: 28px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: #3A4149;">
+        <a href="/#harness" style="color: #3A4149;">Harness</a>
+        <a href="/#program" style="color: #3A4149;">Программа</a>
+        <a href="/#cases" style="color: #3A4149;">Кейсы</a>
+        <a href="/#team" style="color: #3A4149;">Команда</a>
+        <a href="/ai-sdlc/" style="color: #3A4149;">Материалы</a>
+      </div>
+      <div class="v2-nav-slim" style="display: flex; align-items: center; gap: 20px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: #3A4149;">
+        <a href="/#program" style="color: #3A4149;">Программа</a>
+        <a href="/ai-sdlc/" style="color: #3A4149;">Материалы</a>
+      </div>
+      <a class="nav-cta" href="#request" style="margin-left: auto; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: #0E1116; border: 1px solid #0E1116; padding: 9px 16px; white-space: nowrap;">Оставить заявку</a>
+    </div>
+  </div>
+
+  <main>
+  <div class="a-wrap">
+    <nav class="a-crumbs" aria-label="Хлебные крошки"><a href="/">Праксор</a> / <a href="/ai-sdlc/">AI SDLC</a> / <span>Внедрение ИИ в разработку</span></nav>
+    <h1 class="a-h1">Как внедрить ИИ в разработку: план на 3 месяца</h1>
+    <p class="a-lead">По данным DORA, AI в работе используют 90% разработчиков. Отдельные задачи решаются быстрее, а релизы выходят с прежней скоростью. Этот гайд о том, как за три месяца на одной команде перестроить процесс так, чтобы ускорение дошло до production, и как доказать результат цифрами.</p>
+    <div class="a-meta">Обновлено 12 ноября 2026, 19 мин чтения</div>
+    <div class="a-grid">
+    <nav class="a-toc" aria-label="Содержание">
+      <div class="a-toc-t">Содержание</div>
+      <a href="#research">Что известно из исследований</a>
+      <a href="#goal">Сначала цель, потом инструменты</a>
+      <a href="#ready">Чек-лист готовности команды</a>
+      <a href="#team">Как выбрать пилотную команду и задачи</a>
+      <a href="#plan">План по неделям</a>
+      <a href="#roles">Роли и время</a>
+      <a href="#policy">Политика использования AI: что в ней написать</a>
+      <a href="#data">Данные и выбор инструментов</a>
+      <a href="#measure">Как измерить результат</a>
+      <a href="#fail">Почему пилоты проваливаются</a>
+      <a href="#scale">После пилота: перенос на другие команды</a>
+      <a href="#faq">Вопросы</a>
+    </nav>
+    <article class="a-body">
+<h2 id="research">Что известно из исследований</h2>
+<p>Прежде чем строить план, полезно понять, какой эффект вообще можно ждать. Данные расходятся, и ниже разобрано почему.</p>
+<div class="a-tbl"><table>
+  <tr><th>Исследование</th><th>Кто и что</th><th>Результат</th></tr>
+  <tr><td><a href="https://economics.mit.edu/sites/default/files/inline-files/draft_copilot_experiments.pdf" rel="noopener" target="_blank">Cui и соавторы, 2025</a></td><td>Три рандомизированных эксперимента в Microsoft, Accenture и компании из Fortune 100. 4 867 разработчиков, автодополнение GitHub Copilot</td><td>+26% завершённых задач. Менее опытные разработчики чаще пользовались инструментом и получили больший прирост</td></tr>
+  <tr><td><a href="https://arxiv.org/abs/2410.12944" rel="noopener" target="_blank">Google, 2024</a></td><td>Рандомизированный эксперимент, 96 инженеров Google, сложная задача на внутреннем коде</td><td>Примерно на 21% меньше времени на задачу. Доверительный интервал широкий</td></tr>
+  <tr><td><a href="https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/" rel="noopener" target="_blank">METR, 2025</a></td><td>16 опытных разработчиков, 246 задач в их собственных open-source репозиториях</td><td>С AI задачи заняли на 19% больше времени. Сами участники оценили ускорение в 20%</td></tr>
+  <tr><td><a href="https://www.faros.ai/blog/ai-software-engineering" rel="noopener" target="_blank">Faros AI, 2025</a></td><td>Телеметрия Git и трекеров, больше 10 000 разработчиков в 1 255 командах</td><td>Команды с высокой долей AI закрывают на 21% больше задач и мержат на 98% больше PR. Время ревью выросло на 91%, средний размер PR на 154%. Связи с показателями на уровне компании авторы не нашли</td></tr>
+  <tr><td><a href="https://dora.dev/research/2024/dora-report/" rel="noopener" target="_blank">DORA, 2024</a></td><td>Опрос больше 3 000 специалистов</td><td>Рост использования AI на 25% связан с падением пропускной способности на 1,5% и стабильности на 7,2%</td></tr>
+  <tr><td><a href="https://dora.dev/research/2025/dora-report/" rel="noopener" target="_blank">DORA, 2025</a></td><td>Опрос почти 5 000 специалистов и больше 100 часов интервью</td><td>AI используют 90%. Пропускная способность теперь растёт, нестабильность релизов растёт по-прежнему</td></tr>
+</table></div>
+<p>Цифры расходятся, потому что меряют разное. Эксперименты Microsoft и Google считают скорость отдельного человека на ограниченной задаче. METR смотрит на опытных людей в репозиториях, которые они хорошо знают: там подсказки чаще мешают. Faros и DORA смотрят на команду и релизы, и там картина другая. Код пишется быстрее, PR становятся крупнее, ревьюеры не успевают, стабильность падает.</p>
+<p>Отдельно о качестве данных. Faros продаёт аналитику разработки, его выводы построены на корреляциях между кварталами. DORA проводит опрос, её данные — ответы людей. Эксперименты Microsoft и Google проверяли AI-ассистенты 2022–2024 годов, автономных агентов в них не было. Ни одна цифра из таблицы не переносится на вашу команду напрямую. Поэтому в плане ниже первым делом идёт собственный стартовый замер.</p>
+<p>Доверие к результату тоже невысокое. В <a href="https://survey.stackoverflow.co/2025/ai" rel="noopener" target="_blank">опросе Stack Overflow 2025</a> 46% разработчиков не доверяют точности AI-инструментов, доверяют 33%. Главное раздражение назвали 66%: решения от AI почти правильные, но не до конца. Такой код выглядит готовым и проходит беглое ревью, поэтому проверки в процессе важнее, чем выбор модели.</p>
+<p>Для плана из этого следуют три вывода:</p>
+<ol>
+  <li>Ускорение на шаге кода реально. Без изменений процесса до релизов оно не доходит: узкое место сдвигается на ревью и тестирование.</li>
+  <li>Самооценка ускорения ненадёжна. Участники METR были уверены в ускорении, а замер показал замедление. Эффект проверяют по данным Git и CI.</li>
+  <li>DORA в отчёте 2025 года называет AI усилителем: у команд с хорошей инженерной базой он усиливает сильные стороны, у остальных — проблемы. Перед пилотом нужно понять, какая база у вашей команды.</li>
+</ol>
+
+<h2 id="goal">Сначала цель, потом инструменты</h2>
+<p>«Внедрить ИИ» можно по-разному. Купить лицензии всем разработчикам — это первый уровень: быстрее работает отдельный человек. Перестроить процесс так, чтобы агенты делали задачу от спеки до MR, а люди ставили рамки и принимали результат, — это третий уровень. Уровни подробно описаны в статье <a href="/ai-sdlc/">AI SDLC</a>. Бюджет, сроки и роли у этих вариантов разные, поэтому цель фиксируют до старта.</p>
+<p>Хорошая цель пилота записывается в метриках команды и проверяется через три месяца:</p>
+<div class="a-tbl"><table>
+  <tr><th>Плохая цель</th><th>Почему плохая</th><th>Рабочая формулировка</th></tr>
+  <tr><td>Все разработчики пользуются AI</td><td>Использование не равно эффекту, 90% уже пользуются</td><td>Lead time задач пилотной команды сократился относительно стартового замера</td></tr>
+  <tr><td>Агенты пишут 50% кода</td><td>Долю сгенерированного кода легко нарастить, о качестве и скорости релизов она ничего не говорит</td><td>Доля изменений, которые агент сделал без ручных правок после ревью, растёт, а доля неудачных релизов не растёт</td></tr>
+  <tr><td>Сократить команду</td><td>Команда видит в пилоте угрозу и перестаёт честно в нём участвовать</td><td>Команда закрывает тот же объём бэклога за меньшее время. Решения о составе команд принимают позже, по цифрам</td></tr>
+</table></div>
+
+<h2 id="ready">Чек-лист готовности команды</h2>
+<p>Пункты взяты из модели AI-возможностей DORA 2025 и из того, на чём чаще всего спотыкаются пилоты. Отметьте, что у пилотной команды уже есть.</p>
+<div class="a-check" id="readiness">
+  <label><input type="checkbox" /> <span><strong>У компании есть понятная позиция по AI.</strong> Разработчики знают, какие инструменты разрешены, какие данные нельзя отправлять наружу и что от них ждут.</span></label>
+  <label><input type="checkbox" /> <span><strong>ИБ согласовала, куда уходит код:</strong> облачный провайдер, корпоративный шлюз или модель на своих серверах.</span></label>
+  <label><input type="checkbox" /> <span><strong>Изменения небольшие.</strong> Типичный MR проверяют за день, в релиз попадает немного изменений.</span></label>
+  <label><input type="checkbox" /> <span><strong>Тесты запускаются одной командой</strong> и проходят за несколько минут.</span></label>
+  <label><input type="checkbox" /> <span><strong>CI проверяет каждый MR:</strong> сборка, тесты, линтер.</span></label>
+  <label><input type="checkbox" /> <span><strong>Релиз можно откатить быстро</strong> и без ручной работы на полдня.</span></label>
+  <label><input type="checkbox" /> <span><strong>Требования записаны текстом</strong> в Jira, Confluence или репозитории, и к ним можно дать доступ агенту.</span></label>
+  <label><input type="checkbox" /> <span><strong>Метрики можно снять из Git и CI</strong> за последние 2–3 месяца: время от коммита до релиза, частота релизов, откаты.</span></label>
+  <label><input type="checkbox" /> <span><strong>Есть команда-кандидат</strong> со своим сервисом, понятным бэклогом и лидом, который хочет менять процесс.</span></label>
+  <label><input type="checkbox" /> <span><strong>Руководитель готов на время пилота снять KPI по дефектам</strong> и принять просадку скорости в первую неделю.</span></label>
+  <label><input type="checkbox" /> <span><strong>Есть 1–3 инженера,</strong> которым выделят время на правила и проверки для агентов и которые останутся владельцами процесса после пилота.</span></label>
+  <div class="a-check-res" aria-live="polite"><strong>Отмечено: <span data-count>0</span> из 11.</strong> <span data-msg>Отметьте пункты, которые уже выполнены.</span></div>
+</div>
+<p>Как читать результат:</p>
+<ul>
+  <li><strong>9–11.</strong> Можно запускать пилот. Пробелы закроются на диагностике.</li>
+  <li><strong>5–8.</strong> Пилот возможен, но первый месяц уйдёт на инженерную базу. Чаще всего не хватает быстрых тестов, небольших MR и позиции компании по AI.</li>
+  <li><strong>0–4.</strong> Агенты усилят текущие проблемы. Сначала стоит навести порядок в CI, тестах и размере изменений, иначе пилот покажет рост нестабильности.</li>
+</ul>
+<p>Почему пункты именно такие. DORA проверила, какие условия усиливают эффект от AI, и выделила семь: понятная позиция компании по AI, качество внутренних данных, доступ AI к этим данным, дисциплина работы с системой контроля версий, работа небольшими партиями, фокус на пользователе и качество внутренней платформы. Например, при частых коммитах растёт эффект AI для отдельного разработчика. При регулярных откатах растёт эффект для команды. Работа небольшими партиями уменьшает трение и улучшает показатели продукта.</p>
+
+<h2 id="team">Как выбрать пилотную команду и задачи</h2>
+<h3>Команда</h3>
+<p>В предисловии к <a href="https://dora.dev/research/2025/dora-report/" rel="noopener" target="_blank">отчёту DORA 2025</a> Джин Ким приводит опыт Adidas. Команды со слабо связанной архитектурой и быстрой обратной связью получили прирост на 20–30% по коммитам, PR и скорости выпуска функций. Команды, плотно связанные с ERP и с медленной обратной связью, почти ничего не получили. Отсюда критерии:</p>
+<ul>
+  <li>у команды свой сервис или модуль, который она может выкатывать независимо от других;</li>
+  <li>тесты и CI работают, обратная связь занимает минуты;</li>
+  <li>бэклог живой и похож на работу остальных команд, чтобы результат можно было перенести;</li>
+  <li>лид команды хочет участвовать, его не назначили;</li>
+  <li>команда не тушит пожар прямо сейчас.</li>
+</ul>
+<p>Худший выбор — самая запущенная легаси-система «потому что там больнее всего». Пилот там покажет, что AI не работает, хотя не работает инженерная база вокруг. Начинать стоит с типичной команды, а к сложным системам переходить после первого результата.</p>
+
+<h3>Задачи</h3>
+<p>Задачи для пилота берут из реального бэклога, специально придуманные задачи ничего не покажут. Хорошие первые задачи:</p>
+<ul>
+  <li>новый эндпоинт или экран по образцу уже существующих;</li>
+  <li>выгрузка или отчёт с понятными критериями приёмки;</li>
+  <li>тесты для модуля, у которого они слабые;</li>
+  <li>исправление ошибки, которую можно воспроизвести;</li>
+  <li>небольшая доработка внутри одного модуля.</li>
+</ul>
+<p>Отложить до второго месяца: изменения общих контрактов между командами, миграции данных, крупный рефакторинг, задачи без записанных требований. Это не запрет: такие задачи идут через агента, но с архитектурным ревью человеком. Принцип описан в статье про <a href="/harness-engineering/">harness engineering</a>.</p>
+
+<h2 id="plan">План по неделям</h2>
+<p>Ниже — программа Праксора, по которой мы ведём пилоты. Её можно пройти и своими силами, если в компании есть люди с опытом агентной разработки.</p>
+<div class="a-tbl"><table>
+  <tr><th>Срок</th><th>Этап</th><th>Результат</th></tr>
+  <tr><td>Недели&nbsp;1–2</td><td>Диагностика</td><td>Карта процесса, стартовый замер, требования ИБ, выбранные задачи</td></tr>
+  <tr><td>Недели&nbsp;3–4</td><td>Первая версия harness</td><td>Правила, база знаний, шаблон спеки, проверки в CI, владельцы</td></tr>
+  <tr><td>Неделя&nbsp;5</td><td>Запуск</td><td>2–3 реальные задачи прошли весь цикл, команда работает по новому процессу</td></tr>
+  <tr><td>Недели&nbsp;6–12</td><td>Сопровождение</td><td>Еженедельный разбор ручных правок, рост доли задач, которые агент делает без доработки</td></tr>
+  <tr><td>Неделя&nbsp;13</td><td>Ревью</td><td>Сравнение со стартовым замером, решение о следующей команде</td></tr>
+</table></div>
+
+<h3>Недели 1–2. Диагностика</h3>
+<p>Задача этапа — понять, как задача идёт от идеи до production сейчас, и где она стоит дольше всего.</p>
+<ul>
+  <li><strong>Пройти путь одной задачи.</strong> Взять 5–10 закрытых задач и посмотреть по Jira и Git, сколько времени каждая провела в постановке, разработке, ожидании ревью, ревью, тестировании и ожидании релиза. Так видно, какую долю жизни задачи занимает сам код.</li>
+  <li><strong>Снять стартовые метрики</strong> за последние 2–3 месяца: lead time, частота релизов, доля неудачных изменений, время ревью, размер MR, доля переделок. Как считать — в статье про <a href="/dora-metrics/">DORA-метрики</a>.</li>
+  <li><strong>Разобрать, где живут требования и знания:</strong> Jira, Confluence, головы людей, история ревью. От этого зависит, что агент сможет прочитать.</li>
+  <li><strong>Согласовать с ИБ</strong>, какие данные можно отправлять во внешние модели, нужен ли шлюз и локальная модель.</li>
+  <li><strong>Просканировать репозитории</strong> агентом: структура, тесты, сборка, явные проблемы, которые помешают агентам.</li>
+  <li><strong>Выбрать команду и первые задачи</strong> по критериям выше.</li>
+</ul>
+<p class="a-note">Признак, что этап провален: стартового замера нет, а пилот уже начался. Через три месяца результат будут обсуждать по ощущениям, и любой вывод можно будет оспорить.</p>
+
+<h3>Недели 3–4. Первая версия harness</h3>
+<p>Harness — среда вокруг агентов: правила, база знаний, спецификации и проверки, всё в git рядом с кодом. Подробно — в статье <a href="/harness-engineering/">Harness engineering</a>.</p>
+<ul>
+  <li><strong>Правила для агентов.</strong> AGENTS.md с командами сборки и тестов, структурой проекта, договорённостями и запретами. Примеры — в статьях про <a href="/agents-md/">AGENTS.md</a> и <a href="/claude-md/">CLAUDE.md</a>.</li>
+  <li><strong>База знаний.</strong> Архитектурная карта, контракты между сервисами, журнал решений в markdown.</li>
+  <li><strong>Шаблон спеки.</strong> Цель, контекст, критерии приемки, границы, план. Критерии приемки привязаны к тестам. Подробно — в статье <a href="/spec-driven-development/">Spec-driven development</a>.</li>
+  <li><strong>Проверки в CI.</strong> Линтер, тесты, архитектурные проверки, ревью вторым агентом. Всё, что можно проверить автоматически, проверяется автоматически.</li>
+  <li><strong>Роли.</strong> Кто пишет спеки, кто принимает результат, кто отвечает за правила после пилота.</li>
+</ul>
+<p>Сам harness собирается за несколько дней. Остальное время уходит на договорённости о ролях. Без них правила через месяц устаревают: никто не считает их своей работой.</p>
+<p class="a-note">Признак провала: правила написаны «на всякий случай» на сотни строк, а проверок в CI не прибавилось. Агент будет пропускать правила, ревьюеры будут ловить одни и те же ошибки.</p>
+
+<h3>Неделя 5. Запуск</h3>
+<p>Воркшоп с командой на её реальных задачах. Команда проводит две-три задачи из бэклога через весь цикл: спека, код от агента, проверка, выкладка. После воркшопа команда работает только по новому процессу. Параллельный «старый способ на всякий случай» убивает пилот: под давлением сроков люди возвращаются к привычному.</p>
+<p>Возражения снимают заранее. На время пилота отключают KPI по дефектам, чтобы команда не боялась пробовать. Если скорость и проседает, то меньше чем на неделю.</p>
+<p class="a-note">Признак провала: после воркшопа задачи по-прежнему делают руками, а агентом пользуются для отдельных кусков кода. Значит, процесс не поменялся, и команда осталась на первом уровне.</p>
+
+<h3>Недели 6–12. Сопровождение</h3>
+<p>Основная работа пилота. Цикл повторяется каждую неделю:</p>
+<ol>
+  <li>По истории git видно, где код писал агент, а где человек правил руками после него.</li>
+  <li>Каждую ручную правку разбирают: чего не хватило агенту — правила, знания, проверки или требования в спеке.</li>
+  <li>Причину исправляют в harness: дописывают правило, добавляют проверку в CI, уточняют шаблон спеки.</li>
+  <li>Дефекты из production привязывают к спекам, чтобы понять, на каком шаге их пропустили.</li>
+</ol>
+<p>Править код руками и ничего не менять в harness — значит встретить ту же ошибку в следующей задаче. Пример из практики Праксора: агент-ревьюер заметил, что суммы в сводном отчёте расходятся у части клиентов, хотя тесты были зелёные. Причина — агрегация по серверному UTC вместо местной даты клиента. Команда исправила код и добавила правило и проверку в ревью. В следующем продукте агент учитывал это правило с первой задачи.</p>
+<p>Работу агентов ограничивают по масштабу последствий. Изменения внутри одного модуля, покрытые тестами, проходят автоматические проверки. Изменения, которые задевают другие команды, агент сам отправляет на архитектурное ревью. Если агент не прошёл проверку три раза подряд, задачу забирает человек.</p>
+<p>К середине пилота класс задач расширяют: от типовых доработок к задачам с изменением контрактов и данных.</p>
+<p class="a-note">Признак провала: доля ручных правок не снижается к восьмой-девятой неделе. Обычно это значит, что правки делают, а причины не разбирают.</p>
+
+<h3>Неделя 13. Ревью</h3>
+<p>Метрики сравнивают со стартовым замером: DORA-метрики, время ревью, размер MR, доля переделок и AI-метрики — какую долю решений принимают агенты и как эти решения влияют на качество. На ревью принимают одно из трёх решений: запускать следующую команду, продлить пилот с конкретными исправлениями или остановиться.</p>
+<p>Следующую команду запускают уже свои люди: те 1–3 инженера, которые вели harness в пилоте. Новая команда начинает с готовых правил, проверок и шаблонов, и её запуск идёт быстрее первого.</p>
+
+<h2 id="roles">Роли и время</h2>
+<div class="a-tbl"><table>
+  <tr><th>Роль</th><th>Кто</th><th>Что делает</th></tr>
+  <tr><td>Спонсор</td><td>CTO или руководитель разработки</td><td>Фиксирует цель и метрики, снимает KPI по дефектам на время пилота, принимает решение на ревью</td></tr>
+  <tr><td>Лид пилотной команды</td><td>Тимлид команды</td><td>Выбирает задачи, держит команду в новом процессе, разбирает ручные правки</td></tr>
+  <tr><td>Владельцы harness</td><td>1–3 инженера команды</td><td>Ведут правила, базу знаний и проверки. После пилота запускают следующие команды</td></tr>
+  <tr><td>Автор спек</td><td>Аналитик, продакт или разработчик</td><td>Пишет спеки с критериями приемки. Роль зависит от того, как в компании ставят задачи</td></tr>
+  <tr><td>ИБ</td><td>Специалист по безопасности</td><td>Согласует, куда уходит код, участвует в настройке шлюза</td></tr>
+  <tr><td>Архитектор</td><td>Внутренний или внешний</td><td>Проводит диагностику, проектирует harness, разбирает сложные случаи в сопровождении</td></tr>
+</table></div>
+<p>Самая частая ошибка с ролями — владельцы harness делают эту работу «в свободное время». Время на правила и проверки нужно явно закладывать в спринт, особенно в первый месяц. Если этого не сделать, через три недели правила перестают обновляться, и пилот откатывается к тому, с чего начинал.</p>
+<p>Расход на модели тоже планируют заранее. Бюджет токенов задают по командам в шлюзе и смотрят стоимость одной задачи. Мультиагентные схемы расходуют токены быстро: в Anthropic оценивают, что они тратят примерно в 15 раз больше токенов, чем обычный чат. Подробнее — в статье про <a href="/multi-agent-development/">мультиагентную разработку</a>.</p>
+
+<h2 id="policy">Политика использования AI: что в ней написать</h2>
+<p>Из семи условий DORA проще всего выполнить первое: понятную позицию компании по AI. DORA с высокой уверенностью показала, что при ясной позиции AI сильнее влияет на эффективность людей и результаты компании, а трения становится меньше. В интервью разработчики говорили, что без такой позиции они либо используют AI меньше, чем могли бы, из страха нарушить правила, либо используют его там, где нельзя. Содержание позиции DORA не оценивала, только её ясность и известность.</p>
+<p>Достаточно одной страницы:</p>
+<ul>
+  <li><strong>Разрешённые инструменты</strong> и как получить доступ.</li>
+  <li><strong>Какие данные нельзя отправлять</strong> во внешние модели: персональные данные, код под NDA, секреты, коммерческая тайна. Куда идут такие задачи.</li>
+  <li><strong>Ответственность за код.</strong> Автор MR отвечает за код, кто бы его ни написал. Ревью для кода от агента не ослабляется.</li>
+  <li><strong>Что от разработчиков ждут.</strong> Пробовать агентов на своих задачах можно и нужно, для этого есть время.</li>
+  <li><strong>Как метрики будут использоваться.</strong> Для оценки процесса и команды. Оценивать по ним отдельных людей не будут.</li>
+  <li><strong>К кому идти с вопросами</strong> и где лежат правила для агентов.</li>
+</ul>
+
+<h2 id="data">Данные и выбор инструментов</h2>
+<p>Для российских компаний инструмент часто выбирает ИБ. Варианты:</p>
+<div class="a-tbl"><table>
+  <tr><th>Вариант</th><th>Что это</th><th>Когда подходит</th></tr>
+  <tr><td>Зарубежные облачные агенты</td><td>Claude Code, Codex, Cursor, GitHub Copilot</td><td>Код можно отправлять внешнему провайдеру, нет требований к локализации</td></tr>
+  <tr><td>Корпоративный LLM-шлюз</td><td>Прокси с логами, бюджетами и маршрутизацией, через который ходят все агенты</td><td>Нужен аудит, бюджеты по командам, разные модели для разных данных</td></tr>
+  <tr><td><a href="https://sber.pro/publication/sberbank-predstavil-gigacode-20-uluchshennogo-ai-assistenta-dlya-uskoreniya-razrabotki-po/" rel="noopener" target="_blank">GigaCode</a></td><td>Ассистент Сбера на GigaChat и кодовых моделях. По данным Сбера, есть облачная версия на GitVerse и версия для установки в инфраструктуре компании</td><td>Нужен российский вендор и установка в своём контуре</td></tr>
+  <tr><td><a href="https://sourcecraft.dev/portal/code-assistant/" rel="noopener" target="_blank">SourceCraft Code Assistant</a></td><td>Ассистент Яндекса: автодополнение, чат, агентный режим, CLI, плагины для VS Code и JetBrains</td><td>Подходит облачный российский сервис</td></tr>
+  <tr><td>Открытые модели на своих серверах</td><td>Например, <a href="https://qwenlm.github.io/blog/qwen3-coder/" rel="noopener" target="_blank">Qwen3-Coder</a>, развёрнутый через vLLM или SGLang</td><td>Данные нельзя отправлять наружу ни при каких условиях</td></tr>
+</table></div>
+<p>Варианты комбинируют: основная работа идёт через облачную модель, задачи с чувствительными данными шлюз отправляет на локальную. Открытые модели, которые помещаются на доступное железо, обычно слабее лучших облачных на сложных агентных задачах. Перед выбором модель прогоняют на 10–20 задачах из своего бэклога. Подробно о шлюзе и локальных моделях — в статье <a href="/llm-gateway/">LLM-шлюз</a>.</p>
+<p>Выбор конкретного агента для пилота менее важен, чем кажется. Правила, спеки и проверки из harness переносятся между инструментами. Если в будущем модель или агент сменятся, их не придётся переписывать.</p>
+
+<h2 id="measure">Как измерить результат</h2>
+<p>Замер строится на сравнении пилотной команды с её же стартом:</p>
+<ul>
+  <li><strong>DORA-метрики:</strong> lead time, частота релизов, доля неудачных изменений, время восстановления, доля незапланированных релизов-исправлений.</li>
+  <li><strong>Метрики процесса:</strong> время ожидания ревью, размер MR, доля кода, переписанного в первые недели после мержа.</li>
+  <li><strong>AI-метрики:</strong> доля изменений, которые агент сделал без ручной доработки, и сколько дефектов пришло из этих изменений.</li>
+  <li><strong>Опыт разработчиков:</strong> короткий опрос в начале и в конце пилота. Он показывает, где команде тяжело. Ускорение по нему не оценивают: в исследовании METR самооценка разошлась с замером в обратную сторону.</li>
+</ul>
+<p>Число PR и строк кода в отчёт не включают. Faros зафиксировал рост PR на 98% в командах, где связи с результатами компании не нашлось. Подробно о замере — в статье <a href="/ai-impact-metrics/">Как измерить эффект AI в разработке</a>.</p>
+<p>Для руководства результат сводят к трём вопросам: стали ли задачи быстрее доходить до релиза, не упало ли качество, во что это обошлось.</p>
+
+<h2 id="fail">Почему пилоты проваливаются</h2>
+<div class="a-tbl"><table>
+  <tr><th>Что происходит</th><th>Что делать</th></tr>
+  <tr><td>Купили лицензии и ждут эффекта. Агентным режимом пользуется меньшинство</td><td>Учить работе с контекстом и спеками на задачах команды. В Sabre, по данным DORA 2025, агентный режим использовали 25% разработчиков, и компания усилила обучение. В Booking.com разработчиков научили давать агенту точные инструкции и нужный контекст, и прирост числа MR дошёл до 30%</td></tr>
+  <tr><td>Пилот на самой сложной легаси-системе</td><td>Начать с типичной команды со своим сервисом и быстрыми тестами</td></tr>
+  <tr><td>Нет стартового замера</td><td>Снять метрики за 2–3 месяца до любых изменений</td></tr>
+  <tr><td>Ускорили код, ревью не трогали. Очередь на ревью растёт</td><td>Перенести на агентов первичное ревью и проверки в CI, людям оставить архитектуру и риски. Подробно — в статье <a href="/ai-code-review/">AI code review</a></td></tr>
+  <tr><td>Агент делает огромные MR</td><td>Ограничить размер задачи в спеке, делить работу на небольшие изменения. DORA показывает, что небольшие партии усиливают эффект AI для продукта</td></tr>
+  <tr><td>После агента правят руками и ничего не меняют</td><td>Еженедельно разбирать ручные правки и исправлять причину в harness</td></tr>
+  <tr><td>Агент ослабляет тесты, чтобы они прошли</td><td>Запретить менять тесты без отдельного решения человека, проверять это в CI. Подробно — в статье <a href="/ai-test-generation/">Генерация тестов</a></td></tr>
+  <tr><td>Команда боится, что пилот закончится сокращениями</td><td>Сразу сказать цель пилота и как будут использоваться метрики. Решения о составе команд принимают отдельно и по цифрам</td></tr>
+  <tr><td>Ждут полной автономии агентов за квартал</td><td>Цель пилота — устойчивый процесс в одной команде и люди, которые перенесут его дальше. Автономию расширяют постепенно, по мере роста проверок</td></tr>
+</table></div>
+
+<h2 id="scale">После пилота: перенос на другие команды</h2>
+<p>Масштабирование — это перенос готового процесса. Заново строить его в каждой команде не нужно. Правила, шаблоны спек и проверки пилотной команды становятся общей основой. Владельцы harness запускают следующую команду и адаптируют общую основу под её код. Так компания движется к четвёртому уровню: общие знания, правила, агенты и метрики для всех команд.</p>
+<p>Порядок обычно такой:</p>
+<ol>
+  <li>Вынести общие правила и проверки из репозитория пилотной команды в общий репозиторий или шаблон.</li>
+  <li>Запустить вторую команду силами владельцев harness, с тем же стартовым замером.</li>
+  <li>Собрать сообщество владельцев из разных команд: изменения в общих правилах проходят ревью, как код.</li>
+  <li>Подключать команды по одной-две. Каждая следующая находит пробелы в общих правилах.</li>
+</ol>
+
+<div class="a-prx">
+  <h3>Пилот с Праксором</h3>
+  <p>Ведём этот план на вашей пилотной команде: две недели диагностики со стартовым замером, первая версия harness под ваш стек, воркшоп на задачах из вашего бэклога, 2–3 месяца сопровождения с архитектором в чате и ревью с DORA-метриками против старта. С первого дня готовим 1–3 ваших инженеров, которые запустят следующие команды сами. <a href="/#program">Как проходит программа</a></p>
+</div>
+
+<h2 id="faq">Вопросы</h2>
+<div class="a-faq">
+<h3 data-q>Сколько времени занимает внедрение ИИ в разработку?</h3>
+<p>Пилот на одной команде — около трёх месяцев: около месяца на диагностику, harness и запуск, два месяца сопровождения, затем ревью с замером. Следующие команды запускаются быстрее, потому что берут готовые правила и проверки.</p>
+<h3 data-q>С какого инструмента начать внедрение ИИ-агентов?</h3>
+<p>С того, который разрешит ИБ и который поддерживает агентный режим, правила в репозитории и работу через корпоративный шлюз. Правила, спеки и проверки переносятся между инструментами, поэтому выбор агента можно пересмотреть после пилота.</p>
+<h3 data-q>Можно ли внедрить ИИ в разработку без отправки кода наружу?</h3>
+<p>Да. Используют российские ассистенты с установкой в контуре компании или открытые модели на своих серверах, подключённые через LLM-шлюз. Открытые модели обычно слабее лучших облачных, поэтому их проверяют на задачах из своего бэклога до выбора.</p>
+<h3 data-q>Как понять, что внедрение окупилось?</h3>
+<p>Сравнить метрики пилотной команды со стартовым замером: lead time, частоту релизов, долю неудачных изменений, время ревью и долю переделок. Плюс расход на модели в пересчёте на задачу. Число PR и строк кода для этого не подходит.</p>
+<h3 data-q>Нужно ли обучать всю компанию сразу?</h3>
+<p>Нет. Обучение без изменения процесса даёт ускорение отдельных людей. Эффективнее обучить пилотную команду на её задачах, а затем переносить процесс на следующие команды силами своих инженеров.</p>
+</div>
+
+<script>
+(function () {
+  var box = document.getElementById('readiness');
+  if (!box) return;
+  var inputs = box.querySelectorAll('input[type=checkbox]');
+  var count = box.querySelector('[data-count]');
+  var msg = box.querySelector('[data-msg]');
+  function update() {
+    var n = 0;
+    for (var i = 0; i < inputs.length; i++) if (inputs[i].checked) n++;
+    count.textContent = n;
+    if (n === 0) msg.textContent = 'Отметьте пункты, которые уже выполнены.';
+    else if (n >= 9) msg.textContent = 'Можно запускать пилот. Пробелы закроются на диагностике.';
+    else if (n >= 5) msg.textContent = 'Пилот возможен, но первый месяц уйдёт на инженерную базу.';
+    else msg.textContent = 'Сначала стоит навести порядок в CI, тестах и размере изменений.';
+  }
+  for (var i = 0; i < inputs.length; i++) inputs[i].addEventListener('change', update);
+})();
+</script>
+
+<div class="a-next"><div class="a-next-t">Читать дальше</div><a href="/ai-sdlc/">AI SDLC: как встроить AI-агентов в весь цикл разработки<span>Что такое AI SDLC, четыре уровня зрелости команды, из чего состоит процесс с агентами и как измерить эффект через DORA-метрики. Материалы Праксора.</span></a><a href="/dora-metrics/">DORA-метрики: как измерить скорость и стабильность релизов<span>Пять DORA-метрик: lead time, частота релизов, доля неудачных изменений, время восстановления и rework rate. Как их считать по Git и CI, какие ошибки допускают при замере.</span></a><a href="/harness-engineering/">Harness engineering: как собрать среду, в которой агенты пишут код<span>Что такое harness engineering, из каких слоёв состоит harness для AI-агентов, чем он отличается от context engineering и с чего начать в своей команде.</span></a></div>
+    </article>
+    </div>
+  </div>
+  </main>
+
+  <section id="request" style="background: #0E1116; color: #FBFAF8;">
+    <div class="v2-pad v2-sec" style="max-width: 1280px; margin: 0 auto; padding: 128px 40px;">
+      <div class="v2-split" style="display: grid; grid-template-columns: 6fr 6fr; gap: 72px; align-items: start;">
+        <div>
+          <h2 class="v2-h2" style="font-size: 44px; font-weight: 400; line-height: 1.08; letter-spacing: -1.4px; margin: 0; max-width: 20ch; text-wrap: pretty;">Начнём с разговора о вашей команде</h2>
+          <p style="font-size: 17px; line-height: 1.65; color: rgba(251,250,248,0.68); margin: 28px 0 0; max-width: 52ch; text-wrap: pretty;">На первом созвоне разбираем, как сейчас устроена постановка задач и разработка, где AI уже используется, и что можно измерить. После созвона будет понятно, какой Harness собирать и с какой команды начать.</p>
+          <div style="margin-top: 40px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(251,250,248,0.8);">
+            <div style="padding: 14px 0; border-top: 1px solid rgba(251,250,248,0.2);">Созвон 45 минут, без обязательств</div>
+            <div style="padding: 14px 0; border-top: 1px solid rgba(251,250,248,0.2);">Отвечает один из основателей</div>
+            <div style="padding: 14px 0; border-top: 1px solid rgba(251,250,248,0.2); border-bottom: 1px solid rgba(251,250,248,0.2);">Можно под NDA</div>
+          </div>
+        </div>
+        <div style="background: #FBFAF8; color: #0E1116; padding: 40px;">
+          <div id="form-success" style="display: none; padding: 40px 0;">
+            <div style="font-size: 28px; font-weight: 400; letter-spacing: -0.7px; margin-top: 18px;">Заявка отправлена</div>
+            <p style="font-size: 16px; line-height: 1.6; color: #3A4149; margin: 14px 0 0;">Свяжемся в течение одного рабочего дня. Если удобнее сразу написать — <a href="mailto:hello@praxor.ru">hello@praxor.ru</a>.</p>
+          </div>
+          <div id="form-body">
+            <div style="font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.09em; text-transform: uppercase; color: #8B939C;">Оставить заявку</div>
+            <div style="font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; color: #8B939C; margin-top: 32px;">Что вам нужно</div>
+            <div style="margin-top: 12px;">
+              <button type="button" class="intent-opt" data-intent="Диагностика" aria-pressed="true">
+                <span style="display: block; font-size: 16px; font-weight: 500; letter-spacing: -0.2px;">Диагностика</span>
+                <span style="display: block; font-size: 14px; line-height: 1.45; color: #5B646E; margin-top: 4px;">2 недели: архитектура, процессы, стартовые метрики</span>
+              </button>
+              <button type="button" class="intent-opt" data-intent="Воркшоп" aria-pressed="false">
+                <span style="display: block; font-size: 16px; font-weight: 500; letter-spacing: -0.2px;">Воркшоп с командой</span>
+                <span style="display: block; font-size: 14px; line-height: 1.45; color: #5B646E; margin-top: 4px;">Запуск на реальных задачах из вашего бэклога</span>
+              </button>
+              <button type="button" class="intent-opt" data-intent="Консультация" aria-pressed="false">
+                <span style="display: block; font-size: 16px; font-weight: 500; letter-spacing: -0.2px;">Консультация</span>
+                <span style="display: block; font-size: 14px; line-height: 1.45; color: #5B646E; margin-top: 4px;">Разобрать ситуацию и понять, с чего начинать</span>
+              </button>
+            </div>
+            <div style="display: grid; gap: 18px; margin-top: 32px;">
+              <label style="display: block;">
+                <span style="display: block; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; color: #8B939C; margin-bottom: 8px;">Имя</span>
+                <input id="f-name" placeholder="Как к вам обращаться" style="width: 100%; background: transparent; border: none; border-bottom: 1px solid #0E1116; border-radius: 0; padding: 8px 0; font-size: 16px; color: #0E1116; outline: none;" />
+              </label>
+              <label style="display: block;">
+                <span style="display: block; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; color: #8B939C; margin-bottom: 8px;">Компания и ваша роль</span>
+                <input id="f-company" placeholder="Например: финтех, 120 разработчиков, CTO" style="width: 100%; background: transparent; border: none; border-bottom: 1px solid #0E1116; border-radius: 0; padding: 8px 0; font-size: 16px; color: #0E1116; outline: none;" />
+              </label>
+              <label style="display: block;">
+                <span style="display: block; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; color: #8B939C; margin-bottom: 8px;">Email или Telegram</span>
+                <input id="f-contact" placeholder="для связи" style="width: 100%; background: transparent; border: none; border-bottom: 1px solid #0E1116; border-radius: 0; padding: 8px 0; font-size: 16px; color: #0E1116; outline: none;" />
+              </label>
+              <label style="display: block;">
+                <span style="display: block; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; color: #8B939C; margin-bottom: 8px;">Контекст задачи, необязательно</span>
+                <textarea id="f-note" rows="3" placeholder="Что уже пробовали, что не складывается" style="width: 100%; background: transparent; border: 1px solid #E2DFDA; border-radius: 0; padding: 12px; font-size: 16px; color: #0E1116; outline: none; resize: vertical;"></textarea>
+              </label>
+            </div>
+            <div id="f-error" style="display: none; margin-top: 24px; border-left: 3px solid #B45309; padding: 12px 0 12px 15px; font-size: 14px; line-height: 1.5; color: #0E1116;"></div>
+            <button id="f-submit" type="button" class="cta-dark" style="width: 100%; margin-top: 32px; background: #0E1116; color: #FBFAF8; border: none; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; padding: 17px 24px; cursor: pointer;">Отправить заявку</button>
+            <div style="font-size: 13px; line-height: 1.5; color: #5B646E; margin-top: 14px;">Отправляя форму, вы соглашаетесь на обработку контактных данных для связи по вашему запросу.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="v2-pad" style="max-width: 1280px; margin: 0 auto; padding: 0 40px; border-left: 1px solid #E2DFDA; border-right: 1px solid #E2DFDA;">
+    <div style="padding: 56px 0 28px;">
+      <div class="v2-split" style="display: grid; grid-template-columns: 5fr 3fr 4fr; gap: 40px; align-items: start;">
+        <div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="width: 14px; height: 14px; border: 1.5px solid #0E1116; display: block;"></span>
+            <span style="font-size: 16px; font-weight: 500; letter-spacing: -0.3px;">Праксор</span>
+          </div>
+          <p style="font-size: 15px; line-height: 1.6; color: #3A4149; margin: 16px 0 0; max-width: 42ch;">Внедряем AI SDLC в инженерных командах: диагностика, проектирование, внедрение, сопровождение, замер результата.</p>
+          <div style="margin-top: 24px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; line-height: 2; letter-spacing: 0.04em;">
+            <div style="color: #8B939C; text-transform: uppercase; letter-spacing: 0.09em;">Материалы</div>
+            <div><a href="/vnedrenie-ii-v-razrabotku/">Внедрение ИИ в разработку</a></div>
+            <div><a href="/ai-sdlc/">AI SDLC</a></div>
+            <div><a href="/harness-engineering/">Harness engineering</a></div>
+            <div><a href="/spec-driven-development/">Spec-driven development</a></div>
+            <div><a href="/agents-md/">AGENTS.md</a></div>
+            <div><a href="/dora-metrics/">DORA-метрики</a></div>
+            <div><a href="/ai-sdlc/#all">Все материалы</a></div>
+          </div>
+        </div>
+        <div style="font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; line-height: 2; letter-spacing: 0.04em;">
+          <div style="color: #8B939C; text-transform: uppercase; letter-spacing: 0.09em;">Связаться</div>
+          <div><a href="mailto:hello@praxor.ru">hello@praxor.ru</a></div>
+          <div><a href="#request">Оставить заявку</a></div>
+        </div>
+        <div style="font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; line-height: 2; letter-spacing: 0.04em; color: #3A4149;">
+          <div style="color: #8B939C; text-transform: uppercase; letter-spacing: 0.09em;">Реквизиты</div>
+          <div>ИП Уразбаев Асхат Орынбасарович</div>
+          <div>ИНН 502506471139</div>
+          <div>ОГРНИП 321774600743669</div>
+        </div>
+      </div>
+      <div style="margin-top: 44px; padding-top: 20px; border-top: 1px solid #E2DFDA; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; color: #8B939C;">© 2026 Праксор</div>
+    </div>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var WEBHOOK = 'https://hook.eu1.make.com/vnnuiexjx76j3f51vrftbgwtefeoscce';
+  var UTM_KEY = 'praxor_utm';
+  var UTM_FIELDS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'];
+  var LANDING_VERSION = 'praxxor_v1_article';
+
+  try {
+    var q = new URLSearchParams(location.search), fromUrl = {}, any = false;
+    UTM_FIELDS.forEach(function (f) { var v = q.get(f); if (v) { fromUrl[f] = v; any = true; } });
+    if (any && !localStorage.getItem(UTM_KEY)) localStorage.setItem(UTM_KEY, JSON.stringify(fromUrl));
+  } catch (e) {}
+
+  function utm() {
+    var stored = {};
+    try { stored = JSON.parse(localStorage.getItem(UTM_KEY) || '{}') || {}; } catch (e) {}
+    var out = {};
+    UTM_FIELDS.forEach(function (f) { out[f] = stored[f] || ''; });
+    return out;
+  }
+
+  var intent = 'Диагностика';
+  var opts = [].slice.call(document.querySelectorAll('.intent-opt'));
+  opts.forEach(function (b) {
+    b.addEventListener('click', function () {
+      intent = b.getAttribute('data-intent');
+      opts.forEach(function (o) { o.setAttribute('aria-pressed', o === b ? 'true' : 'false'); });
+    });
+  });
+
+  var btn = document.getElementById('f-submit');
+  var errBox = document.getElementById('f-error');
+  var sending = false;
+
+  function showError(msg) {
+    errBox.textContent = msg;
+    errBox.style.display = 'block';
+  }
+
+  btn.addEventListener('click', async function () {
+    if (sending) return;
+    var name = document.getElementById('f-name').value.trim();
+    var company = document.getElementById('f-company').value.trim();
+    var contact = document.getElementById('f-contact').value.trim();
+    var note = document.getElementById('f-note').value.trim();
+    if (!name || !contact) { showError('Заполните имя и контакт для связи.'); return; }
+
+    sending = true;
+    btn.textContent = 'Отправляем…';
+    errBox.style.display = 'none';
+
+    var payload = Object.assign({
+      name: name,
+      company_role: company,
+      contact: contact,
+      request_type: intent,
+      message: note,
+      page_url: location.href,
+      landing_version: LANDING_VERSION
+    }, utm());
+    var body = JSON.stringify(payload);
+    var headers = { 'Content-Type': 'text/plain;charset=UTF-8' };
+
+    function done() {
+      try { ym(112577477, 'reachGoal', 'lead', { request_type: intent }); } catch (e) {}
+      document.getElementById('form-body').style.display = 'none';
+      document.getElementById('form-success').style.display = 'block';
+    }
+    function fail() {
+      sending = false;
+      btn.textContent = 'Отправить заявку';
+      showError('Не удалось отправить заявку. Попробуйте ещё раз или напишите на hello@praxor.ru.');
+    }
+
+    try {
+      var res = await fetch(WEBHOOK, { method: 'POST', headers: headers, body: body });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      done();
+    } catch (e) {
+      try {
+        await fetch(WEBHOOK, { method: 'POST', mode: 'no-cors', headers: headers, body: body });
+        done();
+      } catch (e2) {
+        var queued = false;
+        try { queued = !!(navigator.sendBeacon && navigator.sendBeacon(WEBHOOK, new Blob([body], { type: 'text/plain;charset=UTF-8' }))); } catch (e3) {}
+        queued ? done() : fail();
+      }
+    }
+  });
+})();
+</script>
+</body>
+</html>

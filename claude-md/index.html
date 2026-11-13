@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CLAUDE.md: как настроить инструкции для Claude Code в команде — Праксор</title>
+<meta name="description" content="Как Claude Code загружает CLAUDE.md, где хранить личные и командные правила, как подключить AGENTS.md, правила по путям и правила Cursor. С примером файла." />
+<link rel="canonical" href="https://praxor.ru/claude-md/" />
+<meta property="og:title" content="CLAUDE.md: как настроить инструкции для Claude Code в команде — Праксор" />
+<meta property="og:description" content="Как Claude Code загружает CLAUDE.md, где хранить личные и командные правила, как подключить AGENTS.md, правила по путям и правила Cursor. С примером файла." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://praxor.ru/claude-md/" />
+<meta property="og:site_name" content="Праксор" />
+<meta property="og:locale" content="ru_RU" />
+<meta property="og:image" content="https://praxor.ru/og/claude-md.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:card" content="summary_large_image" />
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "Article",
+   "@id": "https://praxor.ru/claude-md/#article",
+   "headline": "CLAUDE.md: инструкции для Claude Code в командном репозитории",
+   "description": "Как Claude Code загружает CLAUDE.md, где хранить личные и командные правила, как подключить AGENTS.md, правила по путям и правила Cursor. С примером файла.",
+   "inLanguage": "ru",
+   "datePublished": "2026-11-12",
+   "dateModified": "2026-11-12",
+   "mainEntityOfPage": "https://praxor.ru/claude-md/",
+   "author": {
+    "@id": "https://praxor.ru/#org"
+   },
+   "publisher": {
+    "@id": "https://praxor.ru/#org"
+   },
+   "about": [
+    "CLAUDE.md",
+    "Claude Code",
+    "Cursor rules",
+    "AGENTS.md"
+   ]
+  },
+  {
+   "@type": "BreadcrumbList",
+   "itemListElement": [
+    {
+     "@type": "ListItem",
+     "position": 1,
+     "name": "Праксор",
+     "item": "https://praxor.ru/"
+    },
+    {
+     "@type": "ListItem",
+     "position": 2,
+     "name": "AI SDLC",
+     "item": "https://praxor.ru/ai-sdlc/"
+    },
+    {
+     "@type": "ListItem",
+     "position": 3,
+     "name": "CLAUDE.md",
+     "item": "https://praxor.ru/claude-md/"
+    }
+   ]
+  },
+  {
+   "@type": "ProfessionalService",
+   "@id": "https://praxor.ru/#org",
+   "name": "Праксор",
+   "url": "https://praxor.ru/"
+  },
+  {
+   "@type": "FAQPage",
+   "mainEntity": [
+    {
+     "@type": "Question",
+     "name": "Где должен лежать CLAUDE.md?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Командный — в корне репозитория или в .claude/CLAUDE.md, в git. Личный — в ~/.claude/CLAUDE.md, он действует во всех проектах. Правила модулей — в CLAUDE.md внутри каталога модуля."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Читает ли Claude Code файл AGENTS.md?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Claude Code читает CLAUDE.md. Чтобы использовать общий AGENTS.md, в CLAUDE.md добавляют строку @AGENTS.md, и содержимое подставляется в контекст."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Почему Claude Code не выполняет правило из CLAUDE.md?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Файл слишком длинный, правило сформулировано общими словами или противоречит другому правилу. Правила, которые должны соблюдаться всегда, переносят в линтер, тесты, хуки и права доступа."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Чем CLAUDE.md отличается от правил Cursor?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Назначение одинаковое. CLAUDE.md — markdown для Claude Code, правила Cursor — файлы .mdc с полями alwaysApply, globs и description. Общие правила держат в AGENTS.md, который читают оба инструмента."
+     }
+    }
+   ]
+  }
+ ]
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<script type="text/javascript">
+    (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=112577477', 'ym');
+
+    ym(112577477, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/112577477" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBFAF8; }
+  * { box-sizing: border-box; }
+  body { -webkit-font-smoothing: antialiased; }
+  a { color: #1B4DE4; text-decoration: none; }
+  a:hover { color: #0E1116; }
+  ::selection { background: #1B4DE4; color: #ffffff; }
+  input, textarea, button { font-family: inherit; }
+  .cta-dark:hover { background: #1B4DE4 !important; }
+  .cta-ghost:hover { border-color: #0E1116 !important; }
+  .nav-cta:hover { background: #0E1116 !important; color: #FBFAF8 !important; }
+  .intent-opt { text-align: left; cursor: pointer; width: 100%; display: block; background: transparent; border: none; border-top: 1px solid #E2DFDA; border-left: 3px solid transparent; padding: 16px 0 16px 15px; border-radius: 0; }
+  .intent-opt[aria-pressed="true"] { border-top-color: #0E1116; border-left-color: #1B4DE4; }
+  @media (max-width: 1100px) { .v2-nav-wide { display: none !important; } }
+  @media (min-width: 1101px) { .v2-nav-slim { display: none !important; } }
+  @media (max-width: 1000px) {
+    .v2-pad { padding-left: 20px !important; padding-right: 20px !important; }
+    .v2-sec { padding-top: 72px !important; padding-bottom: 72px !important; }
+    .v2-split { grid-template-columns: 1fr !important; gap: 28px !important; }
+    .v2-4 { grid-template-columns: 1fr 1fr !important; }
+    .v2-3 { grid-template-columns: 1fr 1fr !important; gap: 28px !important; }
+    .v2-h1 { font-size: 40px !important; }
+    .v2-h2 { font-size: 30px !important; }
+    .v2-lead { font-size: 20px !important; }
+    .v2-status { grid-template-columns: 1fr 1fr !important; }
+    .v2-scroll { overflow: auto hidden !important; }
+    .v2-axis { min-width: 660px !important; }
+    .v2-3 p { font-size: 14px !important; }
+  }
+  @media (max-width: 620px) {
+    .v2-3 { grid-template-columns: 1fr !important; }
+    .v2-4 { grid-template-columns: 1fr !important; }
+    .v2-nav-slim { display: none !important; }
+  }
+</style>
+
+<style>
+  .a-wrap { max-width: 1280px; margin: 0 auto; padding: 0 40px; border-left: 1px solid #E2DFDA; border-right: 1px solid #E2DFDA; }
+  .a-crumbs { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.06em; color: #8B939C; padding-top: 40px; }
+  .a-crumbs a { color: #5B646E; }
+  .a-crumbs a:hover { color: #1B4DE4; }
+  .a-h1 { font-size: 60px; font-weight: 400; line-height: 1.04; letter-spacing: -2px; margin: 40px 0 0; max-width: 20ch; text-wrap: pretty; }
+  .a-lead { font-size: 22px; font-weight: 300; line-height: 1.5; letter-spacing: -0.3px; color: #3A4149; margin: 32px 0 0; max-width: 62ch; text-wrap: pretty; }
+  .a-meta { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.06em; color: #8B939C; margin-top: 32px; padding-bottom: 56px; }
+  .a-grid { display: grid; grid-template-columns: 3fr 9fr; gap: 56px; border-top: 1px solid #E2DFDA; padding: 56px 0 112px; }
+  .a-toc { position: sticky; top: 92px; align-self: start; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; line-height: 1.5; letter-spacing: 0.03em; }
+  .a-toc-t { color: #8B939C; text-transform: uppercase; letter-spacing: 0.09em; margin-bottom: 14px; }
+  .a-toc a { display: block; color: #3A4149; padding: 7px 0; border-top: 1px solid #E2DFDA; }
+  .a-toc a:hover { color: #1B4DE4; }
+  .a-body { font-size: 18px; line-height: 1.7; color: #1F252C; max-width: 70ch; min-width: 0; overflow-wrap: break-word; }
+  .a-body h2 { font-size: 34px; font-weight: 400; line-height: 1.12; letter-spacing: -1px; color: #0E1116; margin: 72px 0 0; scroll-margin-top: 84px; text-wrap: pretty; }
+  .a-body h2:first-child { margin-top: 0; }
+  .a-body h3 { font-size: 22px; font-weight: 500; line-height: 1.3; letter-spacing: -0.4px; color: #0E1116; margin: 40px 0 0; }
+  .a-body p { margin: 18px 0 0; }
+  .a-body ul, .a-body ol { margin: 18px 0 0; padding-left: 22px; }
+  .a-body li { margin: 8px 0 0; }
+  .a-body li::marker { color: #8B939C; }
+  .a-body strong { font-weight: 600; color: #0E1116; }
+  .a-body a { border-bottom: 1px solid rgba(27,77,228,0.3); }
+  .a-body a:hover { border-bottom-color: #0E1116; }
+  .a-body code { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 0.86em; background: #F1EFEB; padding: 1px 5px; }
+  .a-body pre { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 14px; line-height: 1.6; background: #0E1116; color: #E6E3DD; padding: 24px; margin: 24px 0 0; overflow-x: auto; }
+  .a-body pre code { background: none; padding: 0; font-size: inherit; color: inherit; }
+  .a-body table { width: 100%; border-collapse: collapse; margin: 24px 0 0; font-size: 16px; line-height: 1.5; }
+  .a-body th { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; font-weight: 400; letter-spacing: 0.08em; text-transform: uppercase; color: #8B939C; text-align: left; padding: 0 16px 10px 0; }
+  .a-body td { border-top: 1px solid #E2DFDA; padding: 12px 16px 12px 0; vertical-align: top; }
+  .a-tbl { overflow-x: auto; }
+  .a-note { border-left: 3px solid #1B4DE4; padding: 4px 0 4px 20px; margin: 28px 0 0; color: #3A4149; }
+  .a-check { margin: 24px 0 0; border-top: 1px solid #E2DFDA; }
+  .a-check label { display: grid; grid-template-columns: 22px 1fr; gap: 14px; padding: 14px 0; border-bottom: 1px solid #E2DFDA; cursor: pointer; font-size: 16px; line-height: 1.55; }
+  .a-check input { width: 18px; height: 18px; margin: 4px 0 0; accent-color: #1B4DE4; cursor: pointer; }
+  .a-check label:has(input:checked) span { color: #5B646E; }
+  .a-check-res { margin: 18px 0 0; padding: 16px 20px; background: #F1EFEB; font-size: 16px; line-height: 1.5; }
+  .a-prx { background: #0E1116; color: #FBFAF8; padding: 32px; margin: 48px 0 0; }
+  .a-prx h3 { color: #FBFAF8; margin: 0; }
+  .a-prx p { color: rgba(251,250,248,0.72); }
+  .a-prx a { color: #FBFAF8; border-bottom-color: rgba(251,250,248,0.4); }
+  .a-next { margin-top: 72px; border-top: 1px solid #0E1116; padding-top: 24px; }
+  .a-next-t { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.09em; text-transform: uppercase; color: #8B939C; }
+  .a-next a { display: block; font-size: 21px; letter-spacing: -0.4px; line-height: 1.35; color: #0E1116; padding: 16px 0; border-top: 1px solid #E2DFDA; border-bottom: none; }
+  .a-next a:first-of-type { border-top: none; }
+  .a-next a:hover { color: #1B4DE4; }
+  .a-next span { display: block; font-size: 15px; color: #5B646E; letter-spacing: 0; margin-top: 4px; }
+  .a-faq h3 { margin-top: 28px; }
+  .a-body h2#all + .a-next { margin-top: 28px; }
+  .a-body h2#all ~ .a-next { margin-top: 40px; }
+  @media (max-width: 1000px) {
+    .a-wrap { padding-left: 20px; padding-right: 20px; }
+    .a-h1 { font-size: 38px; letter-spacing: -1.2px; }
+    .a-lead { font-size: 19px; }
+    .a-grid { grid-template-columns: 1fr; gap: 0; padding-top: 40px; }
+    .a-toc { display: none; }
+    .a-body { font-size: 17px; }
+    .a-body h2 { font-size: 27px; margin-top: 56px; }
+    .a-prx { padding: 24px; }
+  }
+  @media (max-width: 620px) {
+    .a-body table, .a-body tbody, .a-body tr, .a-body td { display: block; width: 100%; }
+    .a-body tr:first-child { display: none; }
+    .a-body tr { border-top: 1px solid #E2DFDA; padding: 14px 0; }
+    .a-body td { border: none; padding: 2px 0; }
+    .a-body td:first-child { font-weight: 600; color: #0E1116; }
+  }
+</style>
+</head>
+<body>
+<div style="font-family: 'Geist', -apple-system, system-ui, 'Segoe UI', Helvetica, sans-serif; background: #FBFAF8; color: #0E1116; min-height: 100vh; overflow-x: hidden;">
+
+  <div style="position: sticky; top: 0; z-index: 60; background: rgba(251,250,248,0.88); backdrop-filter: blur(10px); border-bottom: 1px solid #E2DFDA;">
+    <div class="v2-pad" style="max-width: 1280px; margin: 0 auto; padding: 0 40px; display: flex; align-items: center; height: 60px; gap: 40px;">
+      <a href="/" style="display: flex; align-items: center; gap: 10px; color: #0E1116;">
+        <span style="width: 14px; height: 14px; border: 1.5px solid #0E1116; display: block; position: relative;">
+          <span style="position: absolute; left: 3px; top: 3px; width: 5px; height: 5px; background: #1B4DE4; display: block;"></span>
+        </span>
+        <span style="font-size: 16px; font-weight: 500; letter-spacing: -0.3px;">Праксор</span>
+      </a>
+      <div class="v2-nav-wide" style="display: flex; align-items: center; gap: 28px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: #3A4149;">
+        <a href="/#harness" style="color: #3A4149;">Harness</a>
+        <a href="/#program" style="color: #3A4149;">Программа</a>
+        <a href="/#cases" style="color: #3A4149;">Кейсы</a>
+        <a href="/#team" style="color: #3A4149;">Команда</a>
+        <a href="/ai-sdlc/" style="color: #3A4149;">Материалы</a>
+      </div>
+      <div class="v2-nav-slim" style="display: flex; align-items: center; gap: 20px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: #3A4149;">
+        <a href="/#program" style="color: #3A4149;">Программа</a>
+        <a href="/ai-sdlc/" style="color: #3A4149;">Материалы</a>
+      </div>
+      <a class="nav-cta" href="#request" style="margin-left: auto; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: #0E1116; border: 1px solid #0E1116; padding: 9px 16px; white-space: nowrap;">Оставить заявку</a>
+    </div>
+  </div>
+
+  <main>
+  <div class="a-wrap">
+    <nav class="a-crumbs" aria-label="Хлебные крошки"><a href="/">Праксор</a> / <a href="/ai-sdlc/">AI SDLC</a> / <span>CLAUDE.md</span></nav>
+    <h1 class="a-h1">CLAUDE.md: инструкции для Claude Code в командном репозитории</h1>
+    <p class="a-lead">CLAUDE.md — файл с инструкциями, который Claude Code загружает в начале каждой сессии. В командном репозитории он задаёт команды сборки, структуру проекта и правила работы агента. Ниже — как Claude Code находит эти файлы, как разделить личные и общие правила и как жить с CLAUDE.md, AGENTS.md и правилами Cursor в одном проекте.</p>
+    <div class="a-meta">Обновлено 12 ноября 2026, 9 мин чтения</div>
+    <div class="a-grid">
+    <nav class="a-toc" aria-label="Содержание">
+      <div class="a-toc-t">Содержание</div>
+      <a href="#load">Как Claude Code загружает CLAUDE.md</a>
+      <a href="#agents">CLAUDE.md и AGENTS.md в одном репозитории</a>
+      <a href="#rules">Правила по путям: .claude/rules</a>
+      <a href="#content">Что писать в CLAUDE.md</a>
+      <a href="#enforce">Что не стоит доверять CLAUDE.md</a>
+      <a href="#cursor">Правила Cursor и Copilot</a>
+      <a href="#team">Как вести CLAUDE.md командой</a>
+      <a href="#faq">Вопросы</a>
+    </nav>
+    <article class="a-body">
+<h2 id="load">Как Claude Code загружает CLAUDE.md</h2>
+<p>Claude Code собирает инструкции из нескольких мест. Все найденные файлы попадают в контекст, более конкретные дополняют общие. Актуальная схема описана в <a href="https://code.claude.com/docs/en/memory" rel="noopener" target="_blank">документации Claude Code</a>.</p>
+<div class="a-tbl"><table>
+  <tr><th>Где лежит</th><th>Для кого</th><th>Что туда писать</th></tr>
+  <tr><td>Системный файл, который раскатывает ИТ</td><td>Все разработчики компании</td><td>Корпоративные правила: безопасность, запрещённые действия</td></tr>
+  <tr><td><code>./CLAUDE.md</code> или <code>./.claude/CLAUDE.md</code></td><td>Команда проекта, в git</td><td>Команды, структура, договорённости проекта</td></tr>
+  <tr><td><code>~/.claude/CLAUDE.md</code></td><td>Один разработчик, все проекты</td><td>Личные предпочтения: язык ответов, стиль коммитов</td></tr>
+  <tr><td><code>CLAUDE.md</code> в подкаталоге</td><td>Команда, в git</td><td>Правила модуля. Загружается, когда агент читает файлы этого каталога</td></tr>
+</table></div>
+<p>Файлы в подкаталогах экономят контекст: правила фронтенда не попадают в сессию, где агент правит миграции. Это тот же принцип, что у вложенных AGENTS.md.</p>
+
+<h2 id="agents">CLAUDE.md и AGENTS.md в одном репозитории</h2>
+<p>Claude Code читает CLAUDE.md. Codex, Cursor, Copilot, Gemini CLI и большинство других агентов читают <a href="/agents-md/">AGENTS.md</a>. Если в команде пользуются разными агентами, дублировать правила в двух файлах опасно: через месяц они разойдутся.</p>
+<p>Рабочая схема — общие правила в AGENTS.md, в CLAUDE.md импорт и только то, что специфично для Claude Code:</p>
+<pre><code># CLAUDE.md
+@AGENTS.md
+
+## Только для Claude Code
+- Для поиска по коду запускай субагента Explore, основной контекст береги для решения.
+- Длинный вывод тестов не читай целиком: запускай scripts/test-summary.sh.</code></pre>
+<p>Строка <code>@AGENTS.md</code> подставляет содержимое файла в контекст. Импорты работают и для других документов: <code>@docs/architecture.md</code>. Путь считается от файла, в котором стоит импорт. Импорты внутри блоков кода не срабатывают.</p>
+<p>Импорт загружает документ целиком в каждую сессию. Для длинных документов лучше обычная ссылка с пояснением, когда их читать: агент откроет файл сам, когда задача его коснётся.</p>
+
+<h2 id="rules">Правила по путям: .claude/rules</h2>
+<p>В каталоге <code>.claude/rules/</code> правила раскладывают по темам: один файл на тему. Файл с полем <code>paths</code> во frontmatter загружается только при работе с подходящими файлами:</p>
+<pre><code>---
+paths:
+  - "services/billing/**"
+  - "packages/money/**"
+---
+# Деньги
+- Суммы только в Decimal, никаких float.
+- Округление — банковское, функция roundMoney из packages/money.
+- Любое изменение расчётов сопровождается тестом на граничные суммы.</code></pre>
+<p>Без поля <code>paths</code> файл загружается всегда, как основной CLAUDE.md. Разбивка по темам упрощает ревью правил: изменение в правилах про деньги смотрит владелец биллинга.</p>
+
+<h2 id="content">Что писать в CLAUDE.md</h2>
+<p>Состав тот же, что у AGENTS.md: команды, структура, договорённости, границы, процесс сдачи. Несколько правил, которые особенно влияют на качество работы Claude Code:</p>
+<ul>
+  <li><strong>Точные команды с флагами.</strong> Как запустить один тест, как прогнать линтер только по изменённым файлам. Агент запускает их десятки раз за задачу.</li>
+  <li><strong>Как проверить результат.</strong> Какие команды должны пройти перед сдачей, как поднять сервис локально и проверить сценарий.</li>
+  <li><strong>Чего не делать.</strong> Не трогать миграции, не ослаблять тесты, не добавлять зависимости без согласования.</li>
+  <li><strong>Где лежат знания.</strong> Ссылки на архитектурную карту, ADR, спеки.</li>
+</ul>
+<p>Команда <code>/init</code> создаёт черновик CLAUDE.md по содержимому репозитория. Черновик полезен как старт, но в нём много того, что агент и так видит из кода. Его стоит сократить до правил, которые нельзя вывести из файлов.</p>
+
+<h2 id="enforce">Что не стоит доверять CLAUDE.md</h2>
+<p>CLAUDE.md — инструкция для модели. Модель может её пропустить, особенно в длинной сессии. Правила, которые должны соблюдаться всегда, переносят в механизмы, которые срабатывают без участия модели:</p>
+<div class="a-tbl"><table>
+  <tr><th>Правило</th><th>Где его закрепить</th></tr>
+  <tr><td>Форматирование, порядок импортов</td><td>Форматтер и линтер в pre-commit и CI</td></tr>
+  <tr><td>Архитектурные границы между слоями</td><td>Архитектурные тесты или правила линтера</td></tr>
+  <tr><td>Запрет команд и доступа к каталогам</td><td>Права в настройках Claude Code, хуки</td></tr>
+  <tr><td>Обязательный прогон тестов перед сдачей</td><td>Хук на завершение задачи, CI</td></tr>
+  <tr><td>Повторяемые процедуры: релиз, миграция, ревью</td><td>Skills и команды Claude Code</td></tr>
+</table></div>
+<p>В CLAUDE.md остаётся то, что проверить автоматически нельзя: договорённости, контекст, порядок работы.</p>
+
+<h2 id="cursor">Правила Cursor и Copilot</h2>
+<p>Если часть команды работает в Cursor или с GitHub Copilot, у них свои форматы правил:</p>
+<ul>
+  <li><strong>Cursor:</strong> файлы <code>.cursor/rules/*.mdc</code> с frontmatter. Поле <code>alwaysApply: true</code> включает правило всегда, <code>globs</code> — для файлов по маске, по <code>description</code> агент сам подключает правило, если оно подходит к задаче. Старый файл <code>.cursorrules</code> в корне считается устаревшим. Cursor также читает AGENTS.md.</li>
+  <li><strong>GitHub Copilot:</strong> общий файл <code>.github/copilot-instructions.md</code> и файлы <code>.github/instructions/*.instructions.md</code> с полем <code>applyTo</code> для масок путей. Copilot coding agent читает и AGENTS.md.</li>
+</ul>
+<p>Схема для смешанной команды: источник правды — AGENTS.md и база знаний. CLAUDE.md, правила Cursor и инструкции Copilot ссылаются на них и добавляют только специфичное для инструмента.</p>
+
+<h2 id="team">Как вести CLAUDE.md командой</h2>
+<ol>
+  <li><strong>Файл в git, изменения через PR.</strong> Правило, которое влияет на работу агента у всех, проходит ревью как код.</li>
+  <li><strong>Владелец.</strong> Один-два человека отвечают за то, чтобы правила не противоречили друг другу и не устаревали.</li>
+  <li><strong>Правило появляется из случая.</strong> Агент ошибся, человек поправил результат руками — разбираем причину и меняем правило или проверку. Правила «на всякий случай» раздувают файл.</li>
+  <li><strong>Регулярная чистка.</strong> Раз в месяц удалить правила, которые уже закреплены линтером или потеряли смысл.</li>
+</ol>
+
+<div class="a-prx">
+  <h3>Правила агентов в программе Праксора</h3>
+  <p>Собираем правила под ваш стек и ваши инструменты: AGENTS.md, CLAUDE.md, правила Cursor, хуки и проверки. Готовим 1–3 сотрудников, которые ведут harness после пилота. <a href="/#program">Программа</a></p>
+</div>
+
+<h2 id="faq">Вопросы</h2>
+<div class="a-faq">
+<h3 data-q>Где должен лежать CLAUDE.md?</h3>
+<p>Командный — в корне репозитория или в .claude/CLAUDE.md, в git. Личный — в ~/.claude/CLAUDE.md, он действует во всех проектах. Правила модулей — в CLAUDE.md внутри каталога модуля.</p>
+<h3 data-q>Читает ли Claude Code файл AGENTS.md?</h3>
+<p>Claude Code читает CLAUDE.md. Чтобы использовать общий AGENTS.md, в CLAUDE.md добавляют строку @AGENTS.md, и содержимое подставляется в контекст.</p>
+<h3 data-q>Почему Claude Code не выполняет правило из CLAUDE.md?</h3>
+<p>Файл слишком длинный, правило сформулировано общими словами или противоречит другому правилу. Правила, которые должны соблюдаться всегда, переносят в линтер, тесты, хуки и права доступа.</p>
+<h3 data-q>Чем CLAUDE.md отличается от правил Cursor?</h3>
+<p>Назначение одинаковое. CLAUDE.md — markdown для Claude Code, правила Cursor — файлы .mdc с полями alwaysApply, globs и description. Общие правила держат в AGENTS.md, который читают оба инструмента.</p>
+</div>
+
+<div class="a-next"><div class="a-next-t">Читать дальше</div><a href="/agents-md/">AGENTS.md: как написать инструкции для AI-агентов<span>Что такое AGENTS.md, какие агенты его читают, что писать в файле, как работать с монорепозиторием и CLAUDE.md. С шаблоном файла.</span></a><a href="/context-engineering/">Context engineering: как дать агенту нужный контекст<span>Что такое context engineering, почему длинный контекст ухудшает работу агента, как устроить правила, базу знаний и поиск по коду, чтобы агент видел нужное.</span></a><a href="/harness-engineering/">Harness engineering: как собрать среду, в которой агенты пишут код<span>Что такое harness engineering, из каких слоёв состоит harness для AI-агентов, чем он отличается от context engineering и с чего начать в своей команде.</span></a></div>
+    </article>
+    </div>
+  </div>
+  </main>
+
+  <section id="request" style="background: #0E1116; color: #FBFAF8;">
+    <div class="v2-pad v2-sec" style="max-width: 1280px; margin: 0 auto; padding: 128px 40px;">
+      <div class="v2-split" style="display: grid; grid-template-columns: 6fr 6fr; gap: 72px; align-items: start;">
+        <div>
+          <h2 class="v2-h2" style="font-size: 44px; font-weight: 400; line-height: 1.08; letter-spacing: -1.4px; margin: 0; max-width: 20ch; text-wrap: pretty;">Начнём с разговора о вашей команде</h2>
+          <p style="font-size: 17px; line-height: 1.65; color: rgba(251,250,248,0.68); margin: 28px 0 0; max-width: 52ch; text-wrap: pretty;">На первом созвоне разбираем, как сейчас устроена постановка задач и разработка, где AI уже используется, и что можно измерить. После созвона будет понятно, какой Harness собирать и с какой команды начать.</p>
+          <div style="margin-top: 40px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(251,250,248,0.8);">
+            <div style="padding: 14px 0; border-top: 1px solid rgba(251,250,248,0.2);">Созвон 45 минут, без обязательств</div>
+            <div style="padding: 14px 0; border-top: 1px solid rgba(251,250,248,0.2);">Отвечает один из основателей</div>
+            <div style="padding: 14px 0; border-top: 1px solid rgba(251,250,248,0.2); border-bottom: 1px solid rgba(251,250,248,0.2);">Можно под NDA</div>
+          </div>
+        </div>
+        <div style="background: #FBFAF8; color: #0E1116; padding: 40px;">
+          <div id="form-success" style="display: none; padding: 40px 0;">
+            <div style="font-size: 28px; font-weight: 400; letter-spacing: -0.7px; margin-top: 18px;">Заявка отправлена</div>
+            <p style="font-size: 16px; line-height: 1.6; color: #3A4149; margin: 14px 0 0;">Свяжемся в течение одного рабочего дня. Если удобнее сразу написать — <a href="mailto:hello@praxor.ru">hello@praxor.ru</a>.</p>
+          </div>
+          <div id="form-body">
+            <div style="font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.09em; text-transform: uppercase; color: #8B939C;">Оставить заявку</div>
+            <div style="font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; color: #8B939C; margin-top: 32px;">Что вам нужно</div>
+            <div style="margin-top: 12px;">
+              <button type="button" class="intent-opt" data-intent="Диагностика" aria-pressed="true">
+                <span style="display: block; font-size: 16px; font-weight: 500; letter-spacing: -0.2px;">Диагностика</span>
+                <span style="display: block; font-size: 14px; line-height: 1.45; color: #5B646E; margin-top: 4px;">2 недели: архитектура, процессы, стартовые метрики</span>
+              </button>
+              <button type="button" class="intent-opt" data-intent="Воркшоп" aria-pressed="false">
+                <span style="display: block; font-size: 16px; font-weight: 500; letter-spacing: -0.2px;">Воркшоп с командой</span>
+                <span style="display: block; font-size: 14px; line-height: 1.45; color: #5B646E; margin-top: 4px;">Запуск на реальных задачах из вашего бэклога</span>
+              </button>
+              <button type="button" class="intent-opt" data-intent="Консультация" aria-pressed="false">
+                <span style="display: block; font-size: 16px; font-weight: 500; letter-spacing: -0.2px;">Консультация</span>
+                <span style="display: block; font-size: 14px; line-height: 1.45; color: #5B646E; margin-top: 4px;">Разобрать ситуацию и понять, с чего начинать</span>
+              </button>
+            </div>
+            <div style="display: grid; gap: 18px; margin-top: 32px;">
+              <label style="display: block;">
+                <span style="display: block; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; color: #8B939C; margin-bottom: 8px;">Имя</span>
+                <input id="f-name" placeholder="Как к вам обращаться" style="width: 100%; background: transparent; border: none; border-bottom: 1px solid #0E1116; border-radius: 0; padding: 8px 0; font-size: 16px; color: #0E1116; outline: none;" />
+              </label>
+              <label style="display: block;">
+                <span style="display: block; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; color: #8B939C; margin-bottom: 8px;">Компания и ваша роль</span>
+                <input id="f-company" placeholder="Например: финтех, 120 разработчиков, CTO" style="width: 100%; background: transparent; border: none; border-bottom: 1px solid #0E1116; border-radius: 0; padding: 8px 0; font-size: 16px; color: #0E1116; outline: none;" />
+              </label>
+              <label style="display: block;">
+                <span style="display: block; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; color: #8B939C; margin-bottom: 8px;">Email или Telegram</span>
+                <input id="f-contact" placeholder="для связи" style="width: 100%; background: transparent; border: none; border-bottom: 1px solid #0E1116; border-radius: 0; padding: 8px 0; font-size: 16px; color: #0E1116; outline: none;" />
+              </label>
+              <label style="display: block;">
+                <span style="display: block; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; color: #8B939C; margin-bottom: 8px;">Контекст задачи, необязательно</span>
+                <textarea id="f-note" rows="3" placeholder="Что уже пробовали, что не складывается" style="width: 100%; background: transparent; border: 1px solid #E2DFDA; border-radius: 0; padding: 12px; font-size: 16px; color: #0E1116; outline: none; resize: vertical;"></textarea>
+              </label>
+            </div>
+            <div id="f-error" style="display: none; margin-top: 24px; border-left: 3px solid #B45309; padding: 12px 0 12px 15px; font-size: 14px; line-height: 1.5; color: #0E1116;"></div>
+            <button id="f-submit" type="button" class="cta-dark" style="width: 100%; margin-top: 32px; background: #0E1116; color: #FBFAF8; border: none; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; padding: 17px 24px; cursor: pointer;">Отправить заявку</button>
+            <div style="font-size: 13px; line-height: 1.5; color: #5B646E; margin-top: 14px;">Отправляя форму, вы соглашаетесь на обработку контактных данных для связи по вашему запросу.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="v2-pad" style="max-width: 1280px; margin: 0 auto; padding: 0 40px; border-left: 1px solid #E2DFDA; border-right: 1px solid #E2DFDA;">
+    <div style="padding: 56px 0 28px;">
+      <div class="v2-split" style="display: grid; grid-template-columns: 5fr 3fr 4fr; gap: 40px; align-items: start;">
+        <div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="width: 14px; height: 14px; border: 1.5px solid #0E1116; display: block;"></span>
+            <span style="font-size: 16px; font-weight: 500; letter-spacing: -0.3px;">Праксор</span>
+          </div>
+          <p style="font-size: 15px; line-height: 1.6; color: #3A4149; margin: 16px 0 0; max-width: 42ch;">Внедряем AI SDLC в инженерных командах: диагностика, проектирование, внедрение, сопровождение, замер результата.</p>
+          <div style="margin-top: 24px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; line-height: 2; letter-spacing: 0.04em;">
+            <div style="color: #8B939C; text-transform: uppercase; letter-spacing: 0.09em;">Материалы</div>
+            <div><a href="/vnedrenie-ii-v-razrabotku/">Внедрение ИИ в разработку</a></div>
+            <div><a href="/ai-sdlc/">AI SDLC</a></div>
+            <div><a href="/harness-engineering/">Harness engineering</a></div>
+            <div><a href="/spec-driven-development/">Spec-driven development</a></div>
+            <div><a href="/agents-md/">AGENTS.md</a></div>
+            <div><a href="/dora-metrics/">DORA-метрики</a></div>
+            <div><a href="/ai-sdlc/#all">Все материалы</a></div>
+          </div>
+        </div>
+        <div style="font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; line-height: 2; letter-spacing: 0.04em;">
+          <div style="color: #8B939C; text-transform: uppercase; letter-spacing: 0.09em;">Связаться</div>
+          <div><a href="mailto:hello@praxor.ru">hello@praxor.ru</a></div>
+          <div><a href="#request">Оставить заявку</a></div>
+        </div>
+        <div style="font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; line-height: 2; letter-spacing: 0.04em; color: #3A4149;">
+          <div style="color: #8B939C; text-transform: uppercase; letter-spacing: 0.09em;">Реквизиты</div>
+          <div>ИП Уразбаев Асхат Орынбасарович</div>
+          <div>ИНН 502506471139</div>
+          <div>ОГРНИП 321774600743669</div>
+        </div>
+      </div>
+      <div style="margin-top: 44px; padding-top: 20px; border-top: 1px solid #E2DFDA; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; color: #8B939C;">© 2026 Праксор</div>
+    </div>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var WEBHOOK = 'https://hook.eu1.make.com/vnnuiexjx76j3f51vrftbgwtefeoscce';
+  var UTM_KEY = 'praxor_utm';
+  var UTM_FIELDS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'];
+  var LANDING_VERSION = 'praxxor_v1_article';
+
+  try {
+    var q = new URLSearchParams(location.search), fromUrl = {}, any = false;
+    UTM_FIELDS.forEach(function (f) { var v = q.get(f); if (v) { fromUrl[f] = v; any = true; } });
+    if (any && !localStorage.getItem(UTM_KEY)) localStorage.setItem(UTM_KEY, JSON.stringify(fromUrl));
+  } catch (e) {}
+
+  function utm() {
+    var stored = {};
+    try { stored = JSON.parse(localStorage.getItem(UTM_KEY) || '{}') || {}; } catch (e) {}
+    var out = {};
+    UTM_FIELDS.forEach(function (f) { out[f] = stored[f] || ''; });
+    return out;
+  }
+
+  var intent = 'Диагностика';
+  var opts = [].slice.call(document.querySelectorAll('.intent-opt'));
+  opts.forEach(function (b) {
+    b.addEventListener('click', function () {
+      intent = b.getAttribute('data-intent');
+      opts.forEach(function (o) { o.setAttribute('aria-pressed', o === b ? 'true' : 'false'); });
+    });
+  });
+
+  var btn = document.getElementById('f-submit');
+  var errBox = document.getElementById('f-error');
+  var sending = false;
+
+  function showError(msg) {
+    errBox.textContent = msg;
+    errBox.style.display = 'block';
+  }
+
+  btn.addEventListener('click', async function () {
+    if (sending) return;
+    var name = document.getElementById('f-name').value.trim();
+    var company = document.getElementById('f-company').value.trim();
+    var contact = document.getElementById('f-contact').value.trim();
+    var note = document.getElementById('f-note').value.trim();
+    if (!name || !contact) { showError('Заполните имя и контакт для связи.'); return; }
+
+    sending = true;
+    btn.textContent = 'Отправляем…';
+    errBox.style.display = 'none';
+
+    var payload = Object.assign({
+      name: name,
+      company_role: company,
+      contact: contact,
+      request_type: intent,
+      message: note,
+      page_url: location.href,
+      landing_version: LANDING_VERSION
+    }, utm());
+    var body = JSON.stringify(payload);
+    var headers = { 'Content-Type': 'text/plain;charset=UTF-8' };
+
+    function done() {
+      try { ym(112577477, 'reachGoal', 'lead', { request_type: intent }); } catch (e) {}
+      document.getElementById('form-body').style.display = 'none';
+      document.getElementById('form-success').style.display = 'block';
+    }
+    function fail() {
+      sending = false;
+      btn.textContent = 'Отправить заявку';
+      showError('Не удалось отправить заявку. Попробуйте ещё раз или напишите на hello@praxor.ru.');
+    }
+
+    try {
+      var res = await fetch(WEBHOOK, { method: 'POST', headers: headers, body: body });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      done();
+    } catch (e) {
+      try {
+        await fetch(WEBHOOK, { method: 'POST', mode: 'no-cors', headers: headers, body: body });
+        done();
+      } catch (e2) {
+        var queued = false;
+        try { queued = !!(navigator.sendBeacon && navigator.sendBeacon(WEBHOOK, new Blob([body], { type: 'text/plain;charset=UTF-8' }))); } catch (e3) {}
+        queued ? done() : fail();
+      }
+    }
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Spec-driven development: разработка по спецификации с AI-агентами — Праксор</title>
+<meta name="description" content="Как работает spec-driven development, что писать в спецификации для агента, чем отличаются GitHub Spec Kit и Kiro и как совместить спеки с Jira." />
+<link rel="canonical" href="https://praxor.ru/spec-driven-development/" />
+<meta property="og:title" content="Spec-driven development: разработка по спецификации с AI-агентами — Праксор" />
+<meta property="og:description" content="Как работает spec-driven development, что писать в спецификации для агента, чем отличаются GitHub Spec Kit и Kiro и как совместить спеки с Jira." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://praxor.ru/spec-driven-development/" />
+<meta property="og:site_name" content="Праксор" />
+<meta property="og:locale" content="ru_RU" />
+<meta property="og:image" content="https://praxor.ru/og/spec-driven-development.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:card" content="summary_large_image" />
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "Article",
+   "@id": "https://praxor.ru/spec-driven-development/#article",
+   "headline": "Spec-driven development: разработка по спецификации с AI-агентами",
+   "description": "Как работает spec-driven development, что писать в спецификации для агента, чем отличаются GitHub Spec Kit и Kiro и как совместить спеки с Jira.",
+   "inLanguage": "ru",
+   "datePublished": "2026-11-12",
+   "dateModified": "2026-11-12",
+   "mainEntityOfPage": "https://praxor.ru/spec-driven-development/",
+   "author": {
+    "@id": "https://praxor.ru/#org"
+   },
+   "publisher": {
+    "@id": "https://praxor.ru/#org"
+   },
+   "about": [
+    "Spec-driven development",
+    "Разработка по спецификации",
+    "AI-агенты в разработке"
+   ]
+  },
+  {
+   "@type": "BreadcrumbList",
+   "itemListElement": [
+    {
+     "@type": "ListItem",
+     "position": 1,
+     "name": "Праксор",
+     "item": "https://praxor.ru/"
+    },
+    {
+     "@type": "ListItem",
+     "position": 2,
+     "name": "AI SDLC",
+     "item": "https://praxor.ru/ai-sdlc/"
+    },
+    {
+     "@type": "ListItem",
+     "position": 3,
+     "name": "Spec-driven development",
+     "item": "https://praxor.ru/spec-driven-development/"
+    }
+   ]
+  },
+  {
+   "@type": "ProfessionalService",
+   "@id": "https://praxor.ru/#org",
+   "name": "Праксор",
+   "url": "https://praxor.ru/"
+  },
+  {
+   "@type": "FAQPage",
+   "mainEntity": [
+    {
+     "@type": "Question",
+     "name": "Чем спека для агента отличается от обычного ТЗ?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Спека короче и проверяемее. Каждый acceptance criterion связан с тестом, а спека лежит в репозитории и меняется через merge request вместе с кодом."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Кто пишет спеки: аналитик, разработчик или агент?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Черновик часто пишет агент по тикету или описанию задачи. Утверждает спеку человек, который отвечает за результат: аналитик, продакт или техлид. Важно, чтобы у каждой спеки был владелец."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Не замедлит ли SDD работу команды?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "На первых задачах написание спек занимает время. Его отбивает более короткое ревью и меньшее число переделок. Мелкие задачи можно вести без спеки."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Нужен ли GitHub Spec Kit, чтобы начать?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Нет. Достаточно папки со спеками, шаблона и правила в AGENTS.md. Spec Kit полезен, когда нужен готовый процесс с командами для агента."
+     }
+    }
+   ]
+  }
+ ]
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<script type="text/javascript">
+    (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=112577477', 'ym');
+
+    ym(112577477, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/112577477" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBFAF8; }
+  * { box-sizing: border-box; }
+  body { -webkit-font-smoothing: antialiased; }
+  a { color: #1B4DE4; text-decoration: none; }
+  a:hover { color: #0E1116; }
+  ::selection { background: #1B4DE4; color: #ffffff; }
+  input, textarea, button { font-family: inherit; }
+  .cta-dark:hover { background: #1B4DE4 !important; }
+  .cta-ghost:hover { border-color: #0E1116 !important; }
+  .nav-cta:hover { background: #0E1116 !important; color: #FBFAF8 !important; }
+  .intent-opt { text-align: left; cursor: pointer; width: 100%; display: block; background: transparent; border: none; border-top: 1px solid #E2DFDA; border-left: 3px solid transparent; padding: 16px 0 16px 15px; border-radius: 0; }
+  .intent-opt[aria-pressed="true"] { border-top-color: #0E1116; border-left-color: #1B4DE4; }
+  @media (max-width: 1100px) { .v2-nav-wide { display: none !important; } }
+  @media (min-width: 1101px) { .v2-nav-slim { display: none !important; } }
+  @media (max-width: 1000px) {
+    .v2-pad { padding-left: 20px !important; padding-right: 20px !important; }
+    .v2-sec { padding-top: 72px !important; padding-bottom: 72px !important; }
+    .v2-split { grid-template-columns: 1fr !important; gap: 28px !important; }
+    .v2-4 { grid-template-columns: 1fr 1fr !important; }
+    .v2-3 { grid-template-columns: 1fr 1fr !important; gap: 28px !important; }
+    .v2-h1 { font-size: 40px !important; }
+    .v2-h2 { font-size: 30px !important; }
+    .v2-lead { font-size: 20px !important; }
+    .v2-status { grid-template-columns: 1fr 1fr !important; }
+    .v2-scroll { overflow: auto hidden !important; }
+    .v2-axis { min-width: 660px !important; }
+    .v2-3 p { font-size: 14px !important; }
+  }
+  @media (max-width: 620px) {
+    .v2-3 { grid-template-columns: 1fr !important; }
+    .v2-4 { grid-template-columns: 1fr !important; }
+    .v2-nav-slim { display: none !important; }
+  }
+</style>
+
+<style>
+  .a-wrap { max-width: 1280px; margin: 0 auto; padding: 0 40px; border-left: 1px solid #E2DFDA; border-right: 1px solid #E2DFDA; }
+  .a-crumbs { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.06em; color: #8B939C; padding-top: 40px; }
+  .a-crumbs a { color: #5B646E; }
+  .a-crumbs a:hover { color: #1B4DE4; }
+  .a-h1 { font-size: 60px; font-weight: 400; line-height: 1.04; letter-spacing: -2px; margin: 40px 0 0; max-width: 20ch; text-wrap: pretty; }
+  .a-lead { font-size: 22px; font-weight: 300; line-height: 1.5; letter-spacing: -0.3px; color: #3A4149; margin: 32px 0 0; max-width: 62ch; text-wrap: pretty; }
+  .a-meta { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.06em; color: #8B939C; margin-top: 32px; padding-bottom: 56px; }
+  .a-grid { display: grid; grid-template-columns: 3fr 9fr; gap: 56px; border-top: 1px solid #E2DFDA; padding: 56px 0 112px; }
+  .a-toc { position: sticky; top: 92px; align-self: start; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; line-height: 1.5; letter-spacing: 0.03em; }
+  .a-toc-t { color: #8B939C; text-transform: uppercase; letter-spacing: 0.09em; margin-bottom: 14px; }
+  .a-toc a { display: block; color: #3A4149; padding: 7px 0; border-top: 1px solid #E2DFDA; }
+  .a-toc a:hover { color: #1B4DE4; }
+  .a-body { font-size: 18px; line-height: 1.7; color: #1F252C; max-width: 70ch; min-width: 0; overflow-wrap: break-word; }
+  .a-body h2 { font-size: 34px; font-weight: 400; line-height: 1.12; letter-spacing: -1px; color: #0E1116; margin: 72px 0 0; scroll-margin-top: 84px; text-wrap: pretty; }
+  .a-body h2:first-child { margin-top: 0; }
+  .a-body h3 { font-size: 22px; font-weight: 500; line-height: 1.3; letter-spacing: -0.4px; color: #0E1116; margin: 40px 0 0; }
+  .a-body p { margin: 18px 0 0; }
+  .a-body ul, .a-body ol { margin: 18px 0 0; padding-left: 22px; }
+  .a-body li { margin: 8px 0 0; }
+  .a-body li::marker { color: #8B939C; }
+  .a-body strong { font-weight: 600; color: #0E1116; }
+  .a-body a { border-bottom: 1px solid rgba(27,77,228,0.3); }
+  .a-body a:hover { border-bottom-color: #0E1116; }
+  .a-body code { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 0.86em; background: #F1EFEB; padding: 1px 5px; }
+  .a-body pre { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 14px; line-height: 1.6; background: #0E1116; color: #E6E3DD; padding: 24px; margin: 24px 0 0; overflow-x: auto; }
+  .a-body pre code { background: none; padding: 0; font-size: inherit; color: inherit; }
+  .a-body table { width: 100%; border-collapse: collapse; margin: 24px 0 0; font-size: 16px; line-height: 1.5; }
+  .a-body th { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; font-weight: 400; letter-spacing: 0.08em; text-transform: uppercase; color: #8B939C; text-align: left; padding: 0 16px 10px 0; }
+  .a-body td { border-top: 1px solid #E2DFDA; padding: 12px 16px 12px 0; vertical-align: top; }
+  .a-tbl { overflow-x: auto; }
+  .a-note { border-left: 3px solid #1B4DE4; padding: 4px 0 4px 20px; margin: 28px 0 0; color: #3A4149; }
+  .a-check { margin: 24px 0 0; border-top: 1px solid #E2DFDA; }
+  .a-check label { display: grid; grid-template-columns: 22px 1fr; gap: 14px; padding: 14px 0; border-bottom: 1px solid #E2DFDA; cursor: pointer; font-size: 16px; line-height: 1.55; }
+  .a-check input { width: 18px; height: 18px; margin: 4px 0 0; accent-color: #1B4DE4; cursor: pointer; }
+  .a-check label:has(input:checked) span { color: #5B646E; }
+  .a-check-res { margin: 18px 0 0; padding: 16px 20px; background: #F1EFEB; font-size: 16px; line-height: 1.5; }
+  .a-prx { background: #0E1116; color: #FBFAF8; padding: 32px; margin: 48px 0 0; }
+  .a-prx h3 { color: #FBFAF8; margin: 0; }
+  .a-prx p { color: rgba(251,250,248,0.72); }
+  .a-prx a { color: #FBFAF8; border-bottom-color: rgba(251,250,248,0.4); }
+  .a-next { margin-top: 72px; border-top: 1px solid #0E1116; padding-top: 24px; }
+  .a-next-t { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.09em; text-transform: uppercase; color: #8B939C; }
+  .a-next a { display: block; font-size: 21px; letter-spacing: -0.4px; line-height: 1.35; color: #0E1116; padding: 16px 0; border-top: 1px solid #E2DFDA; border-bottom: none; }
+  .a-next a:first-of-type { border-top: none; }
+  .a-next a:hover { color: #1B4DE4; }
+  .a-next span { display: block; font-size: 15px; color: #5B646E; letter-spacing: 0; margin-top: 4px; }
+  .a-faq h3 { margin-top: 28px; }
+  .a-body h2#all + .a-next { margin-top: 28px; }
+  .a-body h2#all ~ .a-next { margin-top: 40px; }
+  @media (max-width: 1000px) {
+    .a-wrap { padding-left: 20px; padding-right: 20px; }
+    .a-h1 { font-size: 38px; letter-spacing: -1.2px; }
+    .a-lead { font-size: 19px; }
+    .a-grid { grid-template-columns: 1fr; gap: 0; padding-top: 40px; }
+    .a-toc { display: none; }
+    .a-body { font-size: 17px; }
+    .a-body h2 { font-size: 27px; margin-top: 56px; }
+    .a-prx { padding: 24px; }
+  }
+  @media (max-width: 620px) {
+    .a-body table, .a-body tbody, .a-body tr, .a-body td { display: block; width: 100%; }
+    .a-body tr:first-child { display: none; }
+    .a-body tr { border-top: 1px solid #E2DFDA; padding: 14px 0; }
+    .a-body td { border: none; padding: 2px 0; }
+    .a-body td:first-child { font-weight: 600; color: #0E1116; }
+  }
+</style>
+</head>
+<body>
+<div style="font-family: 'Geist', -apple-system, system-ui, 'Segoe UI', Helvetica, sans-serif; background: #FBFAF8; color: #0E1116; min-height: 100vh; overflow-x: hidden;">
+
+  <div style="position: sticky; top: 0; z-index: 60; background: rgba(251,250,248,0.88); backdrop-filter: blur(10px); border-bottom: 1px solid #E2DFDA;">
+    <div class="v2-pad" style="max-width: 1280px; margin: 0 auto; padding: 0 40px; display: flex; align-items: center; height: 60px; gap: 40px;">
+      <a href="/" style="display: flex; align-items: center; gap: 10px; color: #0E1116;">
+        <span style="width: 14px; height: 14px; border: 1.5px solid #0E1116; display: block; position: relative;">
+          <span style="position: absolute; left: 3px; top: 3px; width: 5px; height: 5px; background: #1B4DE4; display: block;"></span>
+        </span>
+        <span style="font-size: 16px; font-weight: 500; letter-spacing: -0.3px;">Праксор</span>
+      </a>
+      <div class="v2-nav-wide" style="display: flex; align-items: center; gap: 28px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: #3A4149;">
+        <a href="/#harness" style="color: #3A4149;">Harness</a>
+        <a href="/#program" style="color: #3A4149;">Программа</a>
+        <a href="/#cases" style="color: #3A4149;">Кейсы</a>
+        <a href="/#team" style="color: #3A4149;">Команда</a>
+        <a href="/ai-sdlc/" style="color: #3A4149;">Материалы</a>
+      </div>
+      <div class="v2-nav-slim" style="display: flex; align-items: center; gap: 20px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: #3A4149;">
+        <a href="/#program" style="color: #3A4149;">Программа</a>
+        <a href="/ai-sdlc/" style="color: #3A4149;">Материалы</a>
+      </div>
+      <a class="nav-cta" href="#request" style="margin-left: auto; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: #0E1116; border: 1px solid #0E1116; padding: 9px 16px; white-space: nowrap;">Оставить заявку</a>
+    </div>
+  </div>
+
+  <main>
+  <div class="a-wrap">
+    <nav class="a-crumbs" aria-label="Хлебные крошки"><a href="/">Праксор</a> / <a href="/ai-sdlc/">AI SDLC</a> / <span>Spec-driven development</span></nav>
+    <h1 class="a-h1">Spec-driven development: разработка по спецификации с AI-агентами</h1>
+    <p class="a-lead">В spec-driven development главный документ задачи — спецификация. Агент пишет код по спеке, тесты проверяют её acceptance criteria, а человек ставит задачу и принимает результат. Код становится производным от спеки.</p>
+    <div class="a-meta">Обновлено 12 ноября 2026, 10 мин чтения</div>
+    <div class="a-grid">
+    <nav class="a-toc" aria-label="Содержание">
+      <div class="a-toc-t">Содержание</div>
+      <a href="#what">Что такое spec-driven development</a>
+      <a href="#why">Зачем спека, если агент и так понимает задачу</a>
+      <a href="#flow">Как выглядит процесс</a>
+      <a href="#spec">Что писать в спецификации</a>
+      <a href="#levels">Три уровня SDD</a>
+      <a href="#tools">Инструменты: Spec Kit, Kiro и markdown в репозитории</a>
+      <a href="#jira">Что делать, если задачи живут в Jira</a>
+      <a href="#when">Когда SDD не нужен</a>
+      <a href="#faq">Вопросы</a>
+    </nav>
+    <article class="a-body">
+<h2 id="what">Что такое spec-driven development</h2>
+<p>Spec-driven development (SDD) — подход, в котором работа над задачей начинается со спецификации: что должна делать система, какие ограничения, как проверить результат. Агент получает спеку и по ней строит план, разбивает работу на задачи и пишет код.</p>
+<p>Подход вырос из проблемы вайб-кодинга. Когда разработчик описывает задачу агенту в чате, требования остаются в истории переписки. Агент заполняет пробелы догадками, и через неделю никто не помнит, почему код устроен именно так. Спека фиксирует требования в файле, который лежит в репозитории, проходит ревью и меняется вместе с кодом.</p>
+
+<h2 id="why">Зачем спека, если агент и так понимает задачу</h2>
+<ul>
+  <li><strong>Агент не додумывает молча.</strong> Если в спеке нет ответа, агент задаёт вопрос до начала работы. Без спеки он выбирает вариант сам, и ошибка всплывает на ревью или в production.</li>
+  <li><strong>Ревью становится короче.</strong> Ревьюер сверяет код со спекой и acceptance criteria. Ему не нужно восстанавливать замысел по диффу.</li>
+  <li><strong>Дефект можно отследить до причины.</strong> Если в спеке ошибка, чинят спеку или её шаблон. Если спека верная, а код нет, чинят правила и проверки в <a href="/harness-engineering/">harness</a>.</li>
+  <li><strong>Работу можно передать другому агенту.</strong> Спека отделяет «что делаем» от «как делаем», поэтому одну задачу могут вести планировщик, исполнитель и ревьюер.</li>
+</ul>
+
+<h2 id="flow">Как выглядит процесс</h2>
+<p>Большинство инструментов SDD используют одну последовательность шагов.</p>
+<ol>
+  <li><strong>Specify.</strong> Описать, что нужно и зачем: пользовательские сценарии, требования, acceptance criteria. Без выбора технологий.</li>
+  <li><strong>Clarify.</strong> Агент находит неясные места и задаёт вопросы. Ответы записываются в спеку.</li>
+  <li><strong>Plan.</strong> Технический план: архитектура, изменения в данных, контракты, риски.</li>
+  <li><strong>Tasks.</strong> Разбивка плана на небольшие задачи, каждую можно проверить отдельно.</li>
+  <li><strong>Implement.</strong> Агент выполняет задачи, тесты и ревью проверяют результат по acceptance criteria.</li>
+</ol>
+<p>Человек участвует на переходах: утверждает спеку, принимает план, смотрит результат. Внутри шагов работает агент.</p>
+
+<h2 id="spec">Что писать в спецификации</h2>
+<p>Хорошая спека для агента короткая и проверяемая. Минимальный набор разделов:</p>
+<ul>
+  <li><strong>Контекст.</strong> Зачем задача, кто пользователь, какую проблему решаем.</li>
+  <li><strong>Требования.</strong> Что система должна делать, нумерованным списком.</li>
+  <li><strong>Acceptance criteria.</strong> Конкретные проверки в формате «дано, когда, тогда». Каждый критерий связан с тестом. Как агенту писать такие тесты — в статье про <a href="/ai-test-generation/">генерацию тестов</a>.</li>
+  <li><strong>Вне задачи.</strong> Что в этой задаче не делаем, чтобы агент не расширял объём.</li>
+  <li><strong>Ограничения.</strong> Производительность, безопасность, совместимость, какие модули трогать нельзя.</li>
+  <li><strong>Открытые вопросы.</strong> Агент дописывает их на шаге clarify, человек отвечает.</li>
+</ul>
+<p>Пример фрагмента спеки:</p>
+<pre><code># Сводный отчёт по сделкам за день
+
+## Требования
+1. Отчёт группирует сделки по дате в часовом поясе клиента.
+2. Сумма за день совпадает с суммой сделок клиента за эти сутки.
+
+## Acceptance criteria
+- AC-1. Дано: клиент в UTC+3, сделка в 23:40 по местному времени 14.03.
+  Когда: строим отчёт за 14.03.
+  Тогда: сделка входит в отчёт за 14.03.
+  Тест: reports/test_daily.py::test_local_day_boundary
+- AC-2. Дано: 1000 сделок за сутки.
+  Тогда: отчёт строится быстрее 2 секунд.
+
+## Вне задачи
+- Экспорт в Excel.
+- Изменение схемы таблицы deals.</code></pre>
+<p>Критерий AC-1 появился после реального дефекта: агрегация шла по серверному UTC, и поздние сделки попадали в соседние сутки. Когда такой критерий записан в шаблон спеки, агент учитывает часовой пояс с первой задачи.</p>
+
+<h2 id="levels">Три уровня SDD</h2>
+<p>Бригитта Бёкелер из Thoughtworks в <a href="https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html" rel="noopener" target="_blank">разборе инструментов SDD</a> выделяет три уровня того, насколько серьёзно команда относится к спеке:</p>
+<div class="a-tbl"><table>
+  <tr><th>Уровень</th><th>Что происходит со спекой</th></tr>
+  <tr><td>Spec-first</td><td>Спеку пишут перед задачей, агент работает по ней. После мержа спеку больше не трогают.</td></tr>
+  <tr><td>Spec-anchored</td><td>Спека живёт рядом с кодом. При изменении функции сначала правят спеку, потом код.</td></tr>
+  <tr><td>Spec-as-source</td><td>Человек правит только спеку. Код целиком генерируется из неё и вручную не меняется.</td></tr>
+</table></div>
+<p>Большинству команд стоит начинать со spec-first на новых задачах и переходить к spec-anchored для модулей, которые часто меняются. Spec-as-source пока остаётся экспериментом.</p>
+
+<h2 id="tools">Инструменты: Spec Kit, Kiro и markdown в репозитории</h2>
+<h3>GitHub Spec Kit</h3>
+<p><a href="https://github.com/github/spec-kit" rel="noopener" target="_blank">Spec Kit</a> — открытый набор шаблонов и команд от GitHub. Он ставится в репозиторий и работает с агентом, которым команда уже пользуется: Copilot, Claude Code, Cursor, Gemini CLI и другими. Процесс идёт через команды <code>/speckit.specify</code>, <code>/speckit.plan</code>, <code>/speckit.tasks</code> и <code>/speckit.implement</code>. Перед ними пишется constitution — общие принципы проекта, которые действуют для всех спек.</p>
+
+<h3>Kiro</h3>
+<p>Kiro — среда разработки от AWS на базе Code OSS со встроенным процессом SDD. Спека в Kiro состоит из трёх файлов: требования, дизайн и задачи. Требования пишутся в формате EARS («когда …, система должна …»). Kiro подходит, если команда готова сменить IDE. Если нет, тот же процесс собирают на Spec Kit или на своих шаблонах.</p>
+
+<h3>Свои шаблоны в markdown</h3>
+<p>Для старта инструмент не обязателен. Папка <code>specs/</code> в репозитории, шаблон спеки и правило в <a href="/agents-md/">AGENTS.md</a> «перед реализацией прочитай спеку задачи и сверь план с acceptance criteria» дают основную часть эффекта.</p>
+
+<h2 id="jira">Что делать, если задачи живут в Jira</h2>
+<p>В крупных компаниях Jira часто нельзя заменить: через неё идут планирование, отчётность и согласования. Спеки в этом случае встраивают рядом:</p>
+<ul>
+  <li>Тикет в Jira остаётся точкой учёта: приоритет, исполнитель, статус.</li>
+  <li>Спека лежит в репозитории, тикет ссылается на неё, а спека — на тикет.</li>
+  <li>Агент читает тикет через интеграцию и создаёт черновик спеки, человек его утверждает.</li>
+  <li>Изменения требований вносят в спеку через merge request, чтобы история была в git.</li>
+</ul>
+<p>Какой вариант подходит, решается на диагностике: где команда реально договаривается о требованиях и кто сможет поддерживать спеки.</p>
+
+<h2 id="when">Когда SDD не нужен</h2>
+<ul>
+  <li>Правка опечатки, обновление зависимости, мелкий рефакторинг внутри модуля. Хватит хорошего AGENTS.md и тестов.</li>
+  <li>Прототип, который выбросят через неделю.</li>
+  <li>Исследовательская задача, где требования появятся только после эксперимента. Сначала спайк, потом спека по его итогам.</li>
+</ul>
+<p>Чем больше модулей и команд затрагивает изменение, тем подробнее спека.</p>
+
+<div class="a-prx">
+  <h3>Спеки в программе Праксора</h3>
+  <p>На диагностике смотрим, как устроена постановка задач: Jira, которую не сдвинуть, или спеки в markdown прямо в репозитории. В первой версии harness спека становится главным документом задачи. На воркшопе пилотная команда проводит две-три задачи из своего бэклога через весь цикл: спека, генерация, валидация, выкладка. <a href="/#program">Как проходит внедрение</a></p>
+</div>
+
+<h2 id="faq">Вопросы</h2>
+<div class="a-faq">
+<h3 data-q>Чем спека для агента отличается от обычного ТЗ?</h3>
+<p>Спека короче и проверяемее. Каждый acceptance criterion связан с тестом, а спека лежит в репозитории и меняется через merge request вместе с кодом.</p>
+<h3 data-q>Кто пишет спеки: аналитик, разработчик или агент?</h3>
+<p>Черновик часто пишет агент по тикету или описанию задачи. Утверждает спеку человек, который отвечает за результат: аналитик, продакт или техлид. Важно, чтобы у каждой спеки был владелец.</p>
+<h3 data-q>Не замедлит ли SDD работу команды?</h3>
+<p>На первых задачах написание спек занимает время. Его отбивает более короткое ревью и меньшее число переделок. Мелкие задачи можно вести без спеки.</p>
+<h3 data-q>Нужен ли GitHub Spec Kit, чтобы начать?</h3>
+<p>Нет. Достаточно папки со спеками, шаблона и правила в AGENTS.md. Spec Kit полезен, когда нужен готовый процесс с командами для агента.</p>
+</div>
+
+<div class="a-next"><div class="a-next-t">Читать дальше</div><a href="/harness-engineering/">Harness engineering: как собрать среду, в которой агенты пишут код<span>Что такое harness engineering, из каких слоёв состоит harness для AI-агентов, чем он отличается от context engineering и с чего начать в своей команде.</span></a><a href="/agents-md/">AGENTS.md: как написать инструкции для AI-агентов<span>Что такое AGENTS.md, какие агенты его читают, что писать в файле, как работать с монорепозиторием и CLAUDE.md. С шаблоном файла.</span></a><a href="/ai-sdlc/">AI SDLC: как встроить AI-агентов в весь цикл разработки<span>Что такое AI SDLC, четыре уровня зрелости команды, из чего состоит процесс с агентами и как измерить эффект через DORA-метрики. Материалы Праксора.</span></a></div>
+    </article>
+    </div>
+  </div>
+  </main>
+
+  <section id="request" style="background: #0E1116; color: #FBFAF8;">
+    <div class="v2-pad v2-sec" style="max-width: 1280px; margin: 0 auto; padding: 128px 40px;">
+      <div class="v2-split" style="display: grid; grid-template-columns: 6fr 6fr; gap: 72px; align-items: start;">
+        <div>
+          <h2 class="v2-h2" style="font-size: 44px; font-weight: 400; line-height: 1.08; letter-spacing: -1.4px; margin: 0; max-width: 20ch; text-wrap: pretty;">Начнём с разговора о вашей команде</h2>
+          <p style="font-size: 17px; line-height: 1.65; color: rgba(251,250,248,0.68); margin: 28px 0 0; max-width: 52ch; text-wrap: pretty;">На первом созвоне разбираем, как сейчас устроена постановка задач и разработка, где AI уже используется, и что можно измерить. После созвона будет понятно, какой Harness собирать и с какой команды начать.</p>
+          <div style="margin-top: 40px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(251,250,248,0.8);">
+            <div style="padding: 14px 0; border-top: 1px solid rgba(251,250,248,0.2);">Созвон 45 минут, без обязательств</div>
+            <div style="padding: 14px 0; border-top: 1px solid rgba(251,250,248,0.2);">Отвечает один из основателей</div>
+            <div style="padding: 14px 0; border-top: 1px solid rgba(251,250,248,0.2); border-bottom: 1px solid rgba(251,250,248,0.2);">Можно под NDA</div>
+          </div>
+        </div>
+        <div style="background: #FBFAF8; color: #0E1116; padding: 40px;">
+          <div id="form-success" style="display: none; padding: 40px 0;">
+            <div style="font-size: 28px; font-weight: 400; letter-spacing: -0.7px; margin-top: 18px;">Заявка отправлена</div>
+            <p style="font-size: 16px; line-height: 1.6; color: #3A4149; margin: 14px 0 0;">Свяжемся в течение одного рабочего дня. Если удобнее сразу написать — <a href="mailto:hello@praxor.ru">hello@praxor.ru</a>.</p>
+          </div>
+          <div id="form-body">
+            <div style="font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.09em; text-transform: uppercase; color: #8B939C;">Оставить заявку</div>
+            <div style="font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; color: #8B939C; margin-top: 32px;">Что вам нужно</div>
+            <div style="margin-top: 12px;">
+              <button type="button" class="intent-opt" data-intent="Диагностика" aria-pressed="true">
+                <span style="display: block; font-size: 16px; font-weight: 500; letter-spacing: -0.2px;">Диагностика</span>
+                <span style="display: block; font-size: 14px; line-height: 1.45; color: #5B646E; margin-top: 4px;">2 недели: архитектура, процессы, стартовые метрики</span>
+              </button>
+              <button type="button" class="intent-opt" data-intent="Воркшоп" aria-pressed="false">
+                <span style="display: block; font-size: 16px; font-weight: 500; letter-spacing: -0.2px;">Воркшоп с командой</span>
+                <span style="display: block; font-size: 14px; line-height: 1.45; color: #5B646E; margin-top: 4px;">Запуск на реальных задачах из вашего бэклога</span>
+              </button>
+              <button type="button" class="intent-opt" data-intent="Консультация" aria-pressed="false">
+                <span style="display: block; font-size: 16px; font-weight: 500; letter-spacing: -0.2px;">Консультация</span>
+                <span style="display: block; font-size: 14px; line-height: 1.45; color: #5B646E; margin-top: 4px;">Разобрать ситуацию и понять, с чего начинать</span>
+              </button>
+            </div>
+            <div style="display: grid; gap: 18px; margin-top: 32px;">
+              <label style="display: block;">
+                <span style="display: block; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; color: #8B939C; margin-bottom: 8px;">Имя</span>
+                <input id="f-name" placeholder="Как к вам обращаться" style="width: 100%; background: transparent; border: none; border-bottom: 1px solid #0E1116; border-radius: 0; padding: 8px 0; font-size: 16px; color: #0E1116; outline: none;" />
+              </label>
+              <label style="display: block;">
+                <span style="display: block; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; color: #8B939C; margin-bottom: 8px;">Компания и ваша роль</span>
+                <input id="f-company" placeholder="Например: финтех, 120 разработчиков, CTO" style="width: 100%; background: transparent; border: none; border-bottom: 1px solid #0E1116; border-radius: 0; padding: 8px 0; font-size: 16px; color: #0E1116; outline: none;" />
+              </label>
+              <label style="display: block;">
+                <span style="display: block; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; color: #8B939C; margin-bottom: 8px;">Email или Telegram</span>
+                <input id="f-contact" placeholder="для связи" style="width: 100%; background: transparent; border: none; border-bottom: 1px solid #0E1116; border-radius: 0; padding: 8px 0; font-size: 16px; color: #0E1116; outline: none;" />
+              </label>
+              <label style="display: block;">
+                <span style="display: block; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; color: #8B939C; margin-bottom: 8px;">Контекст задачи, необязательно</span>
+                <textarea id="f-note" rows="3" placeholder="Что уже пробовали, что не складывается" style="width: 100%; background: transparent; border: 1px solid #E2DFDA; border-radius: 0; padding: 12px; font-size: 16px; color: #0E1116; outline: none; resize: vertical;"></textarea>
+              </label>
+            </div>
+            <div id="f-error" style="display: none; margin-top: 24px; border-left: 3px solid #B45309; padding: 12px 0 12px 15px; font-size: 14px; line-height: 1.5; color: #0E1116;"></div>
+            <button id="f-submit" type="button" class="cta-dark" style="width: 100%; margin-top: 32px; background: #0E1116; color: #FBFAF8; border: none; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; padding: 17px 24px; cursor: pointer;">Отправить заявку</button>
+            <div style="font-size: 13px; line-height: 1.5; color: #5B646E; margin-top: 14px;">Отправляя форму, вы соглашаетесь на обработку контактных данных для связи по вашему запросу.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="v2-pad" style="max-width: 1280px; margin: 0 auto; padding: 0 40px; border-left: 1px solid #E2DFDA; border-right: 1px solid #E2DFDA;">
+    <div style="padding: 56px 0 28px;">
+      <div class="v2-split" style="display: grid; grid-template-columns: 5fr 3fr 4fr; gap: 40px; align-items: start;">
+        <div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="width: 14px; height: 14px; border: 1.5px solid #0E1116; display: block;"></span>
+            <span style="font-size: 16px; font-weight: 500; letter-spacing: -0.3px;">Праксор</span>
+          </div>
+          <p style="font-size: 15px; line-height: 1.6; color: #3A4149; margin: 16px 0 0; max-width: 42ch;">Внедряем AI SDLC в инженерных командах: диагностика, проектирование, внедрение, сопровождение, замер результата.</p>
+          <div style="margin-top: 24px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; line-height: 2; letter-spacing: 0.04em;">
+            <div style="color: #8B939C; text-transform: uppercase; letter-spacing: 0.09em;">Материалы</div>
+            <div><a href="/vnedrenie-ii-v-razrabotku/">Внедрение ИИ в разработку</a></div>
+            <div><a href="/ai-sdlc/">AI SDLC</a></div>
+            <div><a href="/harness-engineering/">Harness engineering</a></div>
+            <div><a href="/spec-driven-development/">Spec-driven development</a></div>
+            <div><a href="/agents-md/">AGENTS.md</a></div>
+            <div><a href="/dora-metrics/">DORA-метрики</a></div>
+            <div><a href="/ai-sdlc/#all">Все материалы</a></div>
+          </div>
+        </div>
+        <div style="font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; line-height: 2; letter-spacing: 0.04em;">
+          <div style="color: #8B939C; text-transform: uppercase; letter-spacing: 0.09em;">Связаться</div>
+          <div><a href="mailto:hello@praxor.ru">hello@praxor.ru</a></div>
+          <div><a href="#request">Оставить заявку</a></div>
+        </div>
+        <div style="font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; line-height: 2; letter-spacing: 0.04em; color: #3A4149;">
+          <div style="color: #8B939C; text-transform: uppercase; letter-spacing: 0.09em;">Реквизиты</div>
+          <div>ИП Уразбаев Асхат Орынбасарович</div>
+          <div>ИНН 502506471139</div>
+          <div>ОГРНИП 321774600743669</div>
+        </div>
+      </div>
+      <div style="margin-top: 44px; padding-top: 20px; border-top: 1px solid #E2DFDA; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; color: #8B939C;">© 2026 Праксор</div>
+    </div>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var WEBHOOK = 'https://hook.eu1.make.com/vnnuiexjx76j3f51vrftbgwtefeoscce';
+  var UTM_KEY = 'praxor_utm';
+  var UTM_FIELDS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'];
+  var LANDING_VERSION = 'praxxor_v1_article';
+
+  try {
+    var q = new URLSearchParams(location.search), fromUrl = {}, any = false;
+    UTM_FIELDS.forEach(function (f) { var v = q.get(f); if (v) { fromUrl[f] = v; any = true; } });
+    if (any && !localStorage.getItem(UTM_KEY)) localStorage.setItem(UTM_KEY, JSON.stringify(fromUrl));
+  } catch (e) {}
+
+  function utm() {
+    var stored = {};
+    try { stored = JSON.parse(localStorage.getItem(UTM_KEY) || '{}') || {}; } catch (e) {}
+    var out = {};
+    UTM_FIELDS.forEach(function (f) { out[f] = stored[f] || ''; });
+    return out;
+  }
+
+  var intent = 'Диагностика';
+  var opts = [].slice.call(document.querySelectorAll('.intent-opt'));
+  opts.forEach(function (b) {
+    b.addEventListener('click', function () {
+      intent = b.getAttribute('data-intent');
+      opts.forEach(function (o) { o.setAttribute('aria-pressed', o === b ? 'true' : 'false'); });
+    });
+  });
+
+  var btn = document.getElementById('f-submit');
+  var errBox = document.getElementById('f-error');
+  var sending = false;
+
+  function showError(msg) {
+    errBox.textContent = msg;
+    errBox.style.display = 'block';
+  }
+
+  btn.addEventListener('click', async function () {
+    if (sending) return;
+    var name = document.getElementById('f-name').value.trim();
+    var company = document.getElementById('f-company').value.trim();
+    var contact = document.getElementById('f-contact').value.trim();
+    var note = document.getElementById('f-note').value.trim();
+    if (!name || !contact) { showError('Заполните имя и контакт для связи.'); return; }
+
+    sending = true;
+    btn.textContent = 'Отправляем…';
+    errBox.style.display = 'none';
+
+    var payload = Object.assign({
+      name: name,
+      company_role: company,
+      contact: contact,
+      request_type: intent,
+      message: note,
+      page_url: location.href,
+      landing_version: LANDING_VERSION
+    }, utm());
+    var body = JSON.stringify(payload);
+    var headers = { 'Content-Type': 'text/plain;charset=UTF-8' };
+
+    function done() {
+      try { ym(112577477, 'reachGoal', 'lead', { request_type: intent }); } catch (e) {}
+      document.getElementById('form-body').style.display = 'none';
+      document.getElementById('form-success').style.display = 'block';
+    }
+    function fail() {
+      sending = false;
+      btn.textContent = 'Отправить заявку';
+      showError('Не удалось отправить заявку. Попробуйте ещё раз или напишите на hello@praxor.ru.');
+    }
+
+    try {
+      var res = await fetch(WEBHOOK, { method: 'POST', headers: headers, body: body });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      done();
+    } catch (e) {
+      try {
+        await fetch(WEBHOOK, { method: 'POST', mode: 'no-cors', headers: headers, body: body });
+        done();
+      } catch (e2) {
+        var queued = false;
+        try { queued = !!(navigator.sendBeacon && navigator.sendBeacon(WEBHOOK, new Blob([body], { type: 'text/plain;charset=UTF-8' }))); } catch (e3) {}
+        queued ? done() : fail();
+      }
+    }
+  });
+})();
+</script>
+</body>
+</html>
