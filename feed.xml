@@ -5,8 +5,16 @@
   <link href="https://praxor.ru/feed.xml" rel="self" />
   <link href="https://praxor.ru/ai-sdlc/" />
   <id>https://praxor.ru/feed.xml</id>
-  <updated>2026-11-19T00:00:00Z</updated>
+  <updated>2026-11-27T00:00:00Z</updated>
   <author><name>Праксор</name><email>hello@praxor.ru</email></author>
+  <entry>
+    <title>Шаблоны для пилота: скрипт замера, политика AI, спека</title>
+    <link href="https://praxor.ru/ai-pilot-templates/" />
+    <id>https://praxor.ru/ai-pilot-templates/</id>
+    <published>2026-11-27T00:00:00Z</published>
+    <updated>2026-11-27T00:00:00Z</updated>
+    <summary>Скрипт стартового замера по git, таблица метрик пилота, шаблон политики использования AI, шаблон спеки для агента, журнал разбора ручных правок и письмо команде. Для пилота внедрения ИИ в разработку.</summary>
+  </entry>
   <entry>
     <title>Шаблоны AGENTS.md: готовые файлы для семи стеков</title>
     <link href="https://praxor.ru/agents-md-templates/" />

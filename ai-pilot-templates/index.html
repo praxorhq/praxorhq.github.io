@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Шаблоны для внедрения ИИ в разработку: скрипт замера, политика AI, спека — Праксор</title>
+<meta name="description" content="Скрипт стартового замера по git, таблица метрик пилота, шаблон политики использования AI, шаблон спеки для агента, журнал разбора ручных правок и письмо команде. Для пилота внедрения ИИ в разработку." />
+<link rel="canonical" href="https://praxor.ru/ai-pilot-templates/" />
+<meta property="og:title" content="Шаблоны для внедрения ИИ в разработку: скрипт замера, политика AI, спека — Праксор" />
+<meta property="og:description" content="Скрипт стартового замера по git, таблица метрик пилота, шаблон политики использования AI, шаблон спеки для агента, журнал разбора ручных правок и письмо команде. Для пилота внедрения ИИ в разработку." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://praxor.ru/ai-pilot-templates/" />
+<meta property="og:site_name" content="Праксор" />
+<meta property="og:locale" content="ru_RU" />
+<meta property="article:published_time" content="2026-11-27" />
+<meta property="article:modified_time" content="2026-11-27" />
+<meta property="og:image" content="https://praxor.ru/og/ai-pilot-templates.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:card" content="summary_large_image" />
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "Article",
+   "@id": "https://praxor.ru/ai-pilot-templates/#article",
+   "headline": "Шаблоны для пилота: скрипт замера, политика AI, спека",
+   "description": "Скрипт стартового замера по git, таблица метрик пилота, шаблон политики использования AI, шаблон спеки для агента, журнал разбора ручных правок и письмо команде. Для пилота внедрения ИИ в разработку.",
+   "inLanguage": "ru",
+   "datePublished": "2026-11-27",
+   "dateModified": "2026-11-27",
+   "mainEntityOfPage": "https://praxor.ru/ai-pilot-templates/",
+   "author": {
+    "@id": "https://praxor.ru/#org"
+   },
+   "publisher": {
+    "@id": "https://praxor.ru/#org"
+   },
+   "about": [
+    "Внедрение ИИ в разработку",
+    "Политика использования AI",
+    "Шаблон спецификации",
+    "DORA-метрики"
+   ]
+  },
+  {
+   "@type": "BreadcrumbList",
+   "itemListElement": [
+    {
+     "@type": "ListItem",
+     "position": 1,
+     "name": "Праксор",
+     "item": "https://praxor.ru/"
+    },
+    {
+     "@type": "ListItem",
+     "position": 2,
+     "name": "AI SDLC",
+     "item": "https://praxor.ru/ai-sdlc/"
+    },
+    {
+     "@type": "ListItem",
+     "position": 3,
+     "name": "Шаблоны для пилота",
+     "item": "https://praxor.ru/ai-pilot-templates/"
+    }
+   ]
+  },
+  {
+   "@type": "ProfessionalService",
+   "@id": "https://praxor.ru/#org",
+   "name": "Праксор",
+   "url": "https://praxor.ru/"
+  },
+  {
+   "@type": "FAQPage",
+   "mainEntity": [
+    {
+     "@type": "Question",
+     "name": "Как снять DORA-метрики, если нет доступа к CI?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Частоту релизов, lead time до тега или мержа и размер изменений можно посчитать по истории git скриптом с этой страницы. Долю неудачных изменений и время восстановления git не покажет, для них нужны данные системы инцидентов."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Что написать в политике использования AI для разработчиков?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Разрешённые инструменты, какие данные нельзя отправлять во внешние модели, кто отвечает за код от агента, чего компания ждёт от разработчиков и как будут использоваться метрики. Достаточно одной страницы."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Чем спека для агента отличается от обычного тикета?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "В ней есть проверяемые критерии приёмки, явные границы изменения и список того, что не входит в задачу. Агент по ним понимает, где остановиться, а человек — как принять результат."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Безопасно ли запускать скрипт на рабочем репозитории?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Да. Скрипт только читает историю через git log и git diff, ничего не меняет в репозитории и не обращается к сети. Код открыт, его можно прочитать перед запуском."
+     }
+    }
+   ]
+  }
+ ]
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<link rel="manifest" href="/site.webmanifest" />
+<meta name="theme-color" content="#FBFAF8" />
+<link rel="alternate" type="application/atom+xml" title="Праксор — материалы об AI SDLC" href="https://praxor.ru/feed.xml" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<script type="text/javascript">
+    (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=112577477', 'ym');
+
+    ym(112577477, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/112577477" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBFAF8; }
+  * { box-sizing: border-box; }
+  body { -webkit-font-smoothing: antialiased; }
+  a { color: #1B4DE4; text-decoration: none; }
+  a:hover { color: #0E1116; }
+  ::selection { background: #1B4DE4; color: #ffffff; }
+  input, textarea, button { font-family: inherit; }
+  .cta-dark:hover { background: #1B4DE4 !important; }
+  .cta-ghost:hover { border-color: #0E1116 !important; }
+  .nav-cta:hover { background: #0E1116 !important; color: #FBFAF8 !important; }
+  .intent-opt { text-align: left; cursor: pointer; width: 100%; display: block; background: transparent; border: none; border-top: 1px solid #E2DFDA; border-left: 3px solid transparent; padding: 16px 0 16px 15px; border-radius: 0; }
+  .intent-opt[aria-pressed="true"] { border-top-color: #0E1116; border-left-color: #1B4DE4; }
+  @media (max-width: 1100px) { .v2-nav-wide { display: none !important; } }
+  @media (min-width: 1101px) { .v2-nav-slim { display: none !important; } }
+  @media (max-width: 1000px) {
+    .v2-pad { padding-left: 20px !important; padding-right: 20px !important; }
+    .v2-sec { padding-top: 72px !important; padding-bottom: 72px !important; }
+    .v2-split { grid-template-columns: 1fr !important; gap: 28px !important; }
+    .v2-4 { grid-template-columns: 1fr 1fr !important; }
+    .v2-3 { grid-template-columns: 1fr 1fr !important; gap: 28px !important; }
+    .v2-h1 { font-size: 40px !important; }
+    .v2-h2 { font-size: 30px !important; }
+    .v2-lead { font-size: 20px !important; }
+    .v2-status { grid-template-columns: 1fr 1fr !important; }
+    .v2-scroll { overflow: auto hidden !important; }
+    .v2-axis { min-width: 660px !important; }
+    .v2-3 p { font-size: 14px !important; }
+  }
+  @media (max-width: 620px) {
+    .v2-3 { grid-template-columns: 1fr !important; }
+    .v2-4 { grid-template-columns: 1fr !important; }
+    .v2-nav-slim { display: none !important; }
+  }
+</style>
+
+<style>
+  .a-wrap { max-width: 1280px; margin: 0 auto; padding: 0 40px; border-left: 1px solid #E2DFDA; border-right: 1px solid #E2DFDA; }
+  .a-crumbs { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.06em; color: #8B939C; padding-top: 40px; }
+  .a-crumbs a { color: #5B646E; }
+  .a-crumbs a:hover { color: #1B4DE4; }
+  .a-h1 { font-size: 60px; font-weight: 400; line-height: 1.04; letter-spacing: -2px; margin: 40px 0 0; max-width: 20ch; text-wrap: pretty; }
+  .a-lead { font-size: 22px; font-weight: 300; line-height: 1.5; letter-spacing: -0.3px; color: #3A4149; margin: 32px 0 0; max-width: 62ch; text-wrap: pretty; }
+  .a-meta { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.06em; color: #8B939C; margin-top: 32px; padding-bottom: 56px; }
+  .a-grid { display: grid; grid-template-columns: 3fr 9fr; gap: 56px; border-top: 1px solid #E2DFDA; padding: 56px 0 112px; }
+  .a-toc { position: sticky; top: 92px; align-self: start; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; line-height: 1.5; letter-spacing: 0.03em; }
+  .a-toc-t { color: #8B939C; text-transform: uppercase; letter-spacing: 0.09em; margin-bottom: 14px; }
+  .a-toc a { display: block; color: #3A4149; padding: 7px 0; border-top: 1px solid #E2DFDA; }
+  .a-toc a:hover { color: #1B4DE4; }
+  .a-body { font-size: 18px; line-height: 1.7; color: #1F252C; max-width: 70ch; min-width: 0; overflow-wrap: break-word; }
+  .a-body h2 { font-size: 34px; font-weight: 400; line-height: 1.12; letter-spacing: -1px; color: #0E1116; margin: 72px 0 0; scroll-margin-top: 84px; text-wrap: pretty; }
+  .a-body h2:first-child { margin-top: 0; }
+  .a-body h3 { font-size: 22px; font-weight: 500; line-height: 1.3; letter-spacing: -0.4px; color: #0E1116; margin: 40px 0 0; }
+  .a-body p { margin: 18px 0 0; }
+  .a-body ul, .a-body ol { margin: 18px 0 0; padding-left: 22px; }
+  .a-body li { margin: 8px 0 0; }
+  .a-body li::marker { color: #8B939C; }
+  .a-body strong { font-weight: 600; color: #0E1116; }
+  .a-body a { border-bottom: 1px solid rgba(27,77,228,0.3); }
+  .a-body a:hover { border-bottom-color: #0E1116; }
+  .a-body code { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 0.86em; background: #F1EFEB; padding: 1px 5px; }
+  .a-body pre { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 14px; line-height: 1.6; background: #0E1116; color: #E6E3DD; padding: 24px; margin: 24px 0 0; overflow-x: auto; }
+  .a-body pre code { background: none; padding: 0; font-size: inherit; color: inherit; }
+  .a-copy { display: block; margin: 24px 0 0 auto; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: #0E1116; background: transparent; border: 1px solid #0E1116; padding: 8px 14px; cursor: pointer; }
+  .a-copy:hover { background: #0E1116; color: #FBFAF8; }
+  .a-copy + pre { margin-top: 8px; }
+  .a-body pre[data-copy] { white-space: pre-wrap; overflow-wrap: anywhere; }
+  .a-body table { width: 100%; border-collapse: collapse; margin: 24px 0 0; font-size: 16px; line-height: 1.5; }
+  .a-body th { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; font-weight: 400; letter-spacing: 0.08em; text-transform: uppercase; color: #8B939C; text-align: left; padding: 0 16px 10px 0; }
+  .a-body td { border-top: 1px solid #E2DFDA; padding: 12px 16px 12px 0; vertical-align: top; }
+  .a-tbl { overflow-x: auto; }
+  .a-note { border-left: 3px solid #1B4DE4; padding: 4px 0 4px 20px; margin: 28px 0 0; color: #3A4149; }
+  .a-check { margin: 24px 0 0; border-top: 1px solid #E2DFDA; }
+  .a-check label { display: grid; grid-template-columns: 22px 1fr; gap: 14px; padding: 14px 0; border-bottom: 1px solid #E2DFDA; cursor: pointer; font-size: 16px; line-height: 1.55; }
+  .a-check input { width: 18px; height: 18px; margin: 4px 0 0; accent-color: #1B4DE4; cursor: pointer; }
+  .a-check label:has(input:checked) span { color: #5B646E; }
+  .a-check-res { margin: 18px 0 0; padding: 16px 20px; background: #F1EFEB; font-size: 16px; line-height: 1.5; }
+  .a-prx { background: #0E1116; color: #FBFAF8; padding: 32px; margin: 48px 0 0; }
+  .a-prx h3 { color: #FBFAF8; margin: 0; }
+  .a-prx p { color: rgba(251,250,248,0.72); }
+  .a-prx a { color: #FBFAF8; border-bottom-color: rgba(251,250,248,0.4); }
+  .a-next { margin-top: 72px; border-top: 1px solid #0E1116; padding-top: 24px; }
+  .a-next-t { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.09em; text-transform: uppercase; color: #8B939C; }
+  .a-next a { display: block; font-size: 21px; letter-spacing: -0.4px; line-height: 1.35; color: #0E1116; padding: 16px 0; border-top: 1px solid #E2DFDA; border-bottom: none; }
+  .a-next a:first-of-type { border-top: none; }
+  .a-next a:hover { color: #1B4DE4; }
+  .a-next span { display: block; font-size: 15px; color: #5B646E; letter-spacing: 0; margin-top: 4px; }
+  .a-faq h3 { margin-top: 28px; }
+  .a-body h2#all + .a-next { margin-top: 28px; }
+  .a-body h2#all ~ .a-next { margin-top: 40px; }
+  @media (max-width: 1000px) {
+    .a-wrap { padding-left: 20px; padding-right: 20px; }
+    .a-h1 { font-size: 38px; letter-spacing: -1.2px; }
+    .a-lead { font-size: 19px; }
+    .a-grid { grid-template-columns: 1fr; gap: 0; padding-top: 40px; }
+    .a-toc { display: none; }
+    .a-body { font-size: 17px; }
+    .a-body h2 { font-size: 27px; margin-top: 56px; }
+    .a-prx { padding: 24px; }
+  }
+  @media (max-width: 620px) {
+    .a-body table, .a-body tbody, .a-body tr, .a-body td { display: block; width: 100%; }
+    .a-body tr:first-child { display: none; }
+    .a-body tr { border-top: 1px solid #E2DFDA; padding: 14px 0; }
+    .a-body td { border: none; padding: 2px 0; }
+    .a-body td:first-child { font-weight: 600; color: #0E1116; }
+  }
+</style>
+</head>
+<body>
+<div style="font-family: 'Geist', -apple-system, system-ui, 'Segoe UI', Helvetica, sans-serif; background: #FBFAF8; color: #0E1116; min-height: 100vh; overflow-x: hidden;">
+
+  <div style="position: sticky; top: 0; z-index: 60; background: rgba(251,250,248,0.88); backdrop-filter: blur(10px); border-bottom: 1px solid #E2DFDA;">
+    <div class="v2-pad" style="max-width: 1280px; margin: 0 auto; padding: 0 40px; display: flex; align-items: center; height: 60px; gap: 40px;">
+      <a href="/" aria-label="Праксор — на главную" style="display: flex; align-items: center; color: #0E1116;">
+        <svg viewBox="0 -12.68 90.15 15.08" width="90.15" height="15.08" role="img" aria-label="Праксор" style="display: block;"><g transform="translate(0 -12.68)"><rect x="0.75" y="0.75" width="12.5" height="12.5" fill="none" stroke="#0E1116" stroke-width="1.5"/><rect x="4.5" y="4.5" width="5" height="5" fill="#1B4DE4"/></g><path d="M1.38 0L1.38 -11.36L10.08 -11.36L10.08 0L8.35 0L8.35 -9.78L3.1 -9.78L3.1 0L1.38 0ZM12.36 2.4L12.36 -8.51L13.96 -8.51L14 -6.69L13.81 -6.78Q14.13 -7.73 14.87 -8.22Q15.6 -8.7 16.56 -8.7Q17.81 -8.7 18.62 -8.09Q19.43 -7.47 19.82 -6.46Q20.21 -5.46 20.21 -4.26Q20.21 -3.06 19.82 -2.05Q19.43 -1.04 18.62 -0.42Q17.81 0.19 16.56 0.19Q15.92 0.19 15.36 -0.03Q14.8 -0.26 14.41 -0.66Q14.02 -1.07 13.86 -1.63L14.05 -1.82L14.05 2.4L12.36 2.4ZM16.26 -1.28Q17.28 -1.28 17.87 -2.06Q18.45 -2.85 18.45 -4.26Q18.45 -5.66 17.87 -6.45Q17.28 -7.23 16.26 -7.23Q15.59 -7.23 15.09 -6.9Q14.6 -6.58 14.32 -5.9Q14.05 -5.23 14.05 -4.26Q14.05 -3.28 14.32 -2.61Q14.58 -1.94 15.08 -1.61Q15.59 -1.28 16.26 -1.28ZM24.17 0.19Q22.84 0.19 22.05 -0.42Q21.26 -1.02 21.26 -2.13Q21.26 -3.23 21.92 -3.85Q22.58 -4.46 23.98 -4.74L26.9 -5.3Q26.9 -6.29 26.44 -6.78Q25.98 -7.26 25.06 -7.26Q24.25 -7.26 23.78 -6.9Q23.32 -6.54 23.14 -5.84L21.4 -5.95Q21.64 -7.23 22.59 -7.97Q23.54 -8.7 25.06 -8.7Q26.79 -8.7 27.7 -7.78Q28.6 -6.86 28.6 -5.2L28.6 -1.89Q28.6 -1.58 28.7 -1.46Q28.81 -1.34 29.05 -1.34L29.35 -1.34L29.35 0Q29.27 0.02 29.1 0.03Q28.92 0.05 28.73 0.05Q28.18 0.05 27.79 -0.13Q27.4 -0.3 27.21 -0.71Q27.02 -1.12 27.02 -1.81L27.19 -1.73Q27.06 -1.17 26.64 -0.74Q26.22 -0.3 25.57 -0.06Q24.92 0.19 24.17 0.19ZM24.44 -1.15Q25.21 -1.15 25.75 -1.45Q26.3 -1.74 26.6 -2.27Q26.9 -2.8 26.9 -3.47L26.9 -4.02L24.41 -3.54Q23.64 -3.39 23.33 -3.08Q23.02 -2.77 23.02 -2.29Q23.02 -1.74 23.39 -1.45Q23.77 -1.15 24.44 -1.15ZM36.09 0L32.04 -4.24L35.93 -8.51L38.01 -8.51L33.98 -4.26L38.17 0L36.09 0ZM30.52 0L30.52 -8.51L32.22 -8.51L32.22 0L30.52 0ZM43.31 0.19Q42.1 0.19 41.18 -0.35Q40.27 -0.9 39.78 -1.9Q39.28 -2.91 39.28 -4.26Q39.28 -5.6 39.78 -6.6Q40.27 -7.6 41.18 -8.15Q42.1 -8.7 43.31 -8.7Q44.35 -8.7 45.16 -8.34Q45.97 -7.98 46.47 -7.3Q46.98 -6.61 47.12 -5.62L45.34 -5.52Q45.22 -6.35 44.67 -6.79Q44.13 -7.23 43.31 -7.23Q42.24 -7.23 41.64 -6.44Q41.04 -5.65 41.04 -4.26Q41.04 -2.86 41.64 -2.07Q42.24 -1.28 43.31 -1.28Q44.13 -1.28 44.67 -1.74Q45.22 -2.19 45.34 -3.12L47.12 -3.02Q46.98 -2.05 46.47 -1.33Q45.97 -0.61 45.16 -0.21Q44.35 0.19 43.31 0.19ZM52.02 0.19Q50.8 0.19 49.89 -0.35Q48.98 -0.9 48.48 -1.9Q47.99 -2.91 47.99 -4.26Q47.99 -5.62 48.48 -6.61Q48.98 -7.6 49.89 -8.15Q50.8 -8.7 52.02 -8.7Q53.24 -8.7 54.15 -8.15Q55.06 -7.6 55.56 -6.61Q56.05 -5.62 56.05 -4.26Q56.05 -2.91 55.56 -1.9Q55.06 -0.9 54.15 -0.35Q53.24 0.19 52.02 0.19ZM52.02 -1.28Q53.11 -1.28 53.7 -2.07Q54.29 -2.86 54.29 -4.26Q54.29 -5.65 53.7 -6.44Q53.11 -7.23 52.02 -7.23Q50.95 -7.23 50.35 -6.44Q49.75 -5.65 49.75 -4.26Q49.75 -2.86 50.35 -2.07Q50.95 -1.28 52.02 -1.28ZM57.62 2.4L57.62 -8.51L59.22 -8.51L59.27 -6.69L59.08 -6.78Q59.4 -7.73 60.14 -8.22Q60.87 -8.7 61.83 -8.7Q63.08 -8.7 63.89 -8.09Q64.7 -7.47 65.09 -6.46Q65.48 -5.46 65.48 -4.26Q65.48 -3.06 65.09 -2.05Q64.7 -1.04 63.89 -0.42Q63.08 0.19 61.83 0.19Q61.19 0.19 60.63 -0.03Q60.07 -0.26 59.68 -0.66Q59.29 -1.07 59.13 -1.63L59.32 -1.82L59.32 2.4L57.62 2.4ZM61.53 -1.28Q62.55 -1.28 63.14 -2.06Q63.72 -2.85 63.72 -4.26Q63.72 -5.66 63.14 -6.45Q62.55 -7.23 61.53 -7.23Q60.86 -7.23 60.36 -6.9Q59.86 -6.58 59.59 -5.9Q59.32 -5.23 59.32 -4.26Q59.32 -3.28 59.58 -2.61Q59.85 -1.94 60.35 -1.61Q60.86 -1.28 61.53 -1.28Z" transform="translate(24 0)" fill="#0E1116"/></svg>
+      </a>
+      <div class="v2-nav-wide" style="display: flex; align-items: center; gap: 28px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: #3A4149;">
+        <a href="/#harness" style="color: #3A4149;">Harness</a>
+        <a href="/#program" style="color: #3A4149;">Программа</a>
+        <a href="/#cases" style="color: #3A4149;">Кейсы</a>
+        <a href="/#team" style="color: #3A4149;">Команда</a>
+        <a href="/ai-sdlc/" style="color: #3A4149;">Материалы</a>
+      </div>
+      <div class="v2-nav-slim" style="display: flex; align-items: center; gap: 20px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: #3A4149;">
+        <a href="/#program" style="color: #3A4149;">Программа</a>
+        <a href="/ai-sdlc/" style="color: #3A4149;">Материалы</a>
+      </div>
+      <a class="nav-cta" href="#request" style="margin-left: auto; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: #0E1116; border: 1px solid #0E1116; padding: 9px 16px; white-space: nowrap;">Оставить заявку</a>
+    </div>
+  </div>
+
+  <main>
+  <div class="a-wrap">
+    <nav class="a-crumbs" aria-label="Хлебные крошки"><a href="/">Праксор</a> / <a href="/ai-sdlc/">AI SDLC</a> / <span>Шаблоны для пилота</span></nav>
+    <h1 class="a-h1">Шаблоны для пилота: скрипт замера, политика AI, спека</h1>
+    <p class="a-lead">Инструменты к гайду <a href="/vnedrenie-ii-v-razrabotku/">Как внедрить ИИ в разработку</a>. Скрипт считает стартовые метрики по истории git, остальное — шаблоны документов для каждого этапа пилота. Их можно скопировать и заполнить под свою команду.</p>
+    <div class="a-meta">Обновлено 27 ноября 2026, 12 мин чтения</div>
+    <div class="a-grid">
+    <nav class="a-toc" aria-label="Содержание">
+      <div class="a-toc-t">Содержание</div>
+      <a href="#script">Скрипт стартового замера по git</a>
+      <a href="#baseline">Таблица стартового замера</a>
+      <a href="#policy">Шаблон политики использования AI</a>
+      <a href="#spec">Шаблон спеки для задачи</a>
+      <a href="#log">Журнал разбора ручных правок</a>
+      <a href="#announce">Письмо команде о запуске пилота</a>
+      <a href="#faq">Вопросы</a>
+    </nav>
+    <article class="a-body">
+<div class="a-tbl"><table>
+  <tr><th>Этап пилота</th><th>Что взять</th></tr>
+  <tr><td>Решение о пилоте</td><td><a href="#announce">Письмо команде</a>, <a href="#policy">политика использования AI</a></td></tr>
+  <tr><td>Недели 1–2, диагностика</td><td><a href="#script">Скрипт замера</a>, <a href="#baseline">таблица стартового замера</a></td></tr>
+  <tr><td>Недели 3–4, harness</td><td><a href="#spec">Шаблон спеки</a>, <a href="/agents-md-templates/">шаблоны AGENTS.md</a></td></tr>
+  <tr><td>Недели 6–12, сопровождение</td><td><a href="#log">Журнал разбора ручных правок</a></td></tr>
+  <tr><td>Неделя 13, ревью</td><td>Таблица замера: столбец «Финал» против «Старта»</td></tr>
+</table></div>
+
+<h2 id="script">Скрипт стартового замера по git</h2>
+<p>Метрики до пилота нужны, чтобы через три месяца сравнить результат с цифрами. Часть метрик можно снять по истории git за минуту, без доступа к CI и трекеру. Скрипт написан на Python, работает только со стандартной библиотекой и ничего не отправляет в сеть.</p>
+<p><a href="/tools/git_delivery_metrics.py" download>Скачать git_delivery_metrics.py</a> · 12 КБ, Python 3.8+</p>
+<pre><code>python3 git_delivery_metrics.py --repo path/to/repo
+python3 git_delivery_metrics.py --repo . --days 90 --releases tags --tag-pattern 'v*'
+python3 git_delivery_metrics.py --repo . --format csv &gt; baseline.csv</code></pre>
+<p>Пример вывода на тестовом репозитории:</p>
+<pre><code>$ python3 git_delivery_metrics.py --repo . --end 2026-10-31 --days 61
+Период                                               2026-08-31 — 2026-10-31 (61 дн)
+Что считается релизом                                теги
+Релизов за период                                    3
+Релизов в неделю                                     0.34
+Дней между релизами, медиана                         3.2
+Lead time, медиана                                   26.0 ч
+Lead time, 85-й перцентиль                           3.0 дн
+Коммитов в расчёте lead time                         4
+Изменений в основной ветке                           3
+Размер изменения, строк, медиана                     5
+Размер изменения, строк, 85-й перцентиль             10
+Файлов в изменении, медиана                          1
+Доля откатов (revert)                                33.3%
+Доля релизов со следующим релизом в течение 24 ч     50.0%</code></pre>
+
+<h3>Что считает скрипт</h3>
+<div class="a-tbl"><table>
+  <tr><th>Метрика</th><th>Как считается</th></tr>
+  <tr><td>Релизы и их частота</td><td>Релиз — тег, merge-коммит в основную ветку или каждый коммит основной ветки. По умолчанию скрипт выбирает сам: теги, если они есть в периоде, иначе merge-коммиты</td></tr>
+  <tr><td>Lead time</td><td>Время от создания коммита (author date) до релиза, в который он попал. Медиана и 85-й перцентиль: один зависший коммит не исказит их так, как исказил бы среднее</td></tr>
+  <tr><td>Размер изменения</td><td>Строки добавлено плюс удалено в каждом изменении основной ветки. Lock-файлы и бинарные файлы не учитываются</td></tr>
+  <tr><td>Доля откатов</td><td>Коммиты основной ветки с темой <code>Revert "…"</code> или строкой <code>This reverts commit</code></td></tr>
+  <tr><td>Быстрый следующий релиз</td><td>Только для тегов: доля релизов, за которыми следующий вышел в течение 24 часов. Грубая замена доли неудачных изменений</td></tr>
+</table></div>
+
+<h3>Чего скрипт не знает</h3>
+<ul>
+  <li><strong>Когда изменение реально попало в production.</strong> Тег или merge — это приближение. Если деплой идёт по кнопке через день после мержа, точный lead time даст только журнал деплоев CI.</li>
+  <li><strong>Доля неудачных изменений и время восстановления.</strong> Для них нужна система инцидентов: какой релиз что сломал и когда сервис восстановили. Откаты и быстрые повторные релизы показывают только часть картины.</li>
+  <li><strong>Время ревью.</strong> Оно живёт в GitLab или GitHub, его берут из API или отчётов платформы.</li>
+</ul>
+<p>Поэтому в таблице замера ниже у каждой метрики указан источник. То, что не даёт git, берут из CI, трекера и системы инцидентов. Как считать каждую DORA-метрику, разобрано в статье <a href="/dora-metrics/">DORA-метрики</a>.</p>
+<p class="a-note">Проверка скрипта: на тестовом репозитории с заданными датами коммитов, тегов и откатом результаты совпали с расчётом вручную. На реальном репозитории с merge-коммитами скрипт отработал за доли секунды.</p>
+
+<h2 id="baseline">Таблица стартового замера</h2>
+<p>Таблица на весь пилот: старт до изменений, промежуточная точка на шестой неделе и финал на тринадцатой. Заполняйте её для пилотной команды. Сравнивать с другими командами не нужно.</p>
+<p><a href="/tools/pilot-baseline.csv" download>Скачать pilot-baseline.csv</a> · открывается в Excel и Google Таблицах</p>
+<div class="a-tbl"><table>
+  <tr><th>Метрика</th><th>Источник данных</th><th>Как получить</th></tr>
+  <tr><td>Lead time, медиана</td><td>Git: тег или merge против времени коммита</td><td>Скрипт git_delivery_metrics.py</td></tr>
+  <tr><td>Lead time, 85-й перцентиль</td><td>Git</td><td>Скрипт git_delivery_metrics.py</td></tr>
+  <tr><td>Релизов в неделю</td><td>Git-теги или журнал деплоев CI</td><td>Скрипт или выгрузка из CI</td></tr>
+  <tr><td>Время ожидания первого ревью, медиана</td><td>GitLab или GitHub API</td><td>От открытия MR до первого комментария ревьюера</td></tr>
+  <tr><td>Время от открытия MR до мержа, медиана</td><td>GitLab или GitHub API</td><td>Выгрузка MR за период</td></tr>
+  <tr><td>Доля неудачных изменений</td><td>Система инцидентов, откаты в CI</td><td>Релизы с откатом или хотфиксом / все релизы</td></tr>
+  <tr><td>Время восстановления, медиана</td><td>Система инцидентов</td><td>От начала инцидента из-за релиза до восстановления</td></tr>
+  <tr><td>Доля незапланированных релизов-исправлений</td><td>Журнал деплоев, задачи типа «баг»</td><td>Релизы-исправления / все релизы</td></tr>
+  <tr><td>Размер изменения, строк, медиана</td><td>Git</td><td>Скрипт git_delivery_metrics.py</td></tr>
+  <tr><td>Доля откатов (revert)</td><td>Git</td><td>Скрипт git_delivery_metrics.py</td></tr>
+  <tr><td>Доля изменений агента без ручной доработки</td><td>Git: коммиты агента и правки людей в том же MR</td><td>Еженедельный разбор ручных правок</td></tr>
+  <tr><td>Дефекты из изменений агента</td><td>Трекер: дефект привязан к спеке и MR</td><td>Число за период</td></tr>
+  <tr><td>Расход на модели на одну задачу</td><td>Логи LLM-шлюза или счета провайдера</td><td>Сумма за период / закрытые задачи</td></tr>
+  <tr><td>Опрос: где теряется время, что мешает</td><td>Короткий опрос команды</td><td>В начале и в конце пилота</td></tr>
+</table></div>
+<p>Число PR и строк кода в таблицу не входят: они растут при любом использовании AI и ничего не говорят о результате. Почему — в статье <a href="/ai-impact-metrics/">Как измерить эффект AI в разработке</a>.</p>
+
+<h2 id="policy">Шаблон политики использования AI</h2>
+<p>DORA в отчёте 2025 года показала: когда позиция компании по AI ясна разработчикам, AI сильнее влияет на эффективность людей и результаты компании. Без неё одни используют AI меньше, чем могли бы, из страха нарушить правила, другие — там, где нельзя. Шаблон занимает одну страницу. Замените текст в квадратных скобках.</p>
+<pre data-copy><code># Политика использования AI в разработке
+
+Версия: 1.0, [дата]. Владелец: [CTO или руководитель разработки]. Вопросы: [канал или человек].
+
+## Зачем этот документ
+Мы ждём, что разработчики пробуют AI-инструменты в своей работе. Этот документ описывает, какие инструменты разрешены, какие данные в них можно отправлять и кто отвечает за результат.
+
+## Разрешённые инструменты
+- [Инструмент 1] — для всех разработчиков. Доступ: [как получить].
+- [Инструмент 2] — через корпоративный шлюз [адрес]. Ключ выдаёт [кто].
+- Другие инструменты для работы с кодом компании не используем. Хотите попробовать новый — напишите [кому].
+
+## Какие данные нельзя отправлять во внешние модели
+- персональные данные клиентов и сотрудников;
+- код и документы проектов под NDA: [список или где он ведётся];
+- секреты: пароли, токены, ключи, строки подключения;
+- [другое, что относится к коммерческой тайне компании].
+
+Задачи с такими данными решаем только через [локальную модель / шлюз с маршрутизацией] или без AI.
+
+## Ответственность за код
+- Автор MR отвечает за весь код в нём, кто бы его ни написал.
+- Код от агента проходит то же ревью и те же проверки CI, что и код человека.
+- Тесты не ослабляем и не удаляем, чтобы изменение прошло проверки.
+
+## Что от вас ждём
+- Пробовать агентов на своих задачах. Время на это заложено в спринт.
+- Делиться приёмами и ошибками в [канал].
+- Если агент ошибся, разобрать причину и предложить правку правил в репозитории.
+
+## Как мы используем метрики
+Метрики пилота описывают процесс и команду. Оценивать по ним отдельных людей мы не будем.
+
+## Пересмотр
+Документ пересматриваем раз в квартал или при смене инструментов.</code></pre>
+<p class="a-note">Шаблон написан для команды разработки. Раздел о данных согласуйте с ИБ и юристом: требования 152-ФЗ и договоров с клиентами у каждой компании свои.</p>
+
+<h2 id="spec">Шаблон спеки для задачи</h2>
+<p>Спека — главный документ задачи: по ней агент пишет код, а человек принимает результат. В шаблоне два раздела, которых обычно нет в тикетах: «Границы» и «Не входит в задачу». Без них агент расширяет задачу на соседние модули. Как работать со спеками, разобрано в статье <a href="/spec-driven-development/">Spec-driven development</a>.</p>
+<pre data-copy><code># Спека: [название задачи]
+
+Задача: [ссылка на тикет]. Автор: [имя]. Статус: черновик / согласована / в работе / готово.
+
+## Цель
+[Что меняется для пользователя или системы и зачем. Одно-два предложения.]
+
+## Контекст
+- Где это в коде: [модули, файлы]
+- Связанные документы: [архитектурная карта, ADR, контракт API]
+- Как работает сейчас: [кратко]
+
+## Критерии приёмки
+Каждый критерий проверяется тестом.
+1. Дано [исходное состояние], когда [действие], тогда [ожидаемый результат].
+2. Дано ..., когда ..., тогда ...
+3. Ошибки и граничные случаи: [пустые данные, нет прав, таймаут внешнего сервиса].
+
+## Границы
+- Масштаб: [один модуль / меняется публичный API / затрагивает другие команды]
+- Не трогать: [миграции, общие пакеты, конфигурацию]
+- Если для решения нужно выйти за границы — остановиться и описать план в MR.
+
+## Не входит в задачу
+- [что сознательно не делаем сейчас]
+
+## План
+[Заполняет исполнитель или агент до начала работы: шаги, файлы, тесты.]
+
+## Проверка
+- Команды: [тесты, линтер, типы — как в AGENTS.md]
+- Ручная проверка: [сценарий, если нужен]
+
+## Открытые вопросы
+- [вопрос] — кому задать: [кто]</code></pre>
+
+<h2 id="log">Журнал разбора ручных правок</h2>
+<p>Главный ритуал сопровождения. Раз в неделю команда смотрит по git, где человек правил код после агента, и для каждой правки находит причину. Причину исправляют в harness: правило, знание, проверка или требование в спеке. Если только править код, та же ошибка повторится в следующей задаче.</p>
+<pre data-copy><code># Разбор ручных правок: неделя [номер]
+
+Дата разбора: [дата]. Участники: [лид команды, владельцы harness].
+
+| MR | Что поправил человек | Почему агент ошибся | Что изменили | Кто |
+|----|----------------------|---------------------|--------------|-----|
+| [!123] | [суммы считались по UTC] | не хватило правила | правило в AGENTS.md + проверка в ревью | [имя] |
+| [!124] | [агент изменил общий пакет] | спека не задала границы | поле «Не трогать» в шаблоне спеки | [имя] |
+| | | | | |
+
+Причины: не хватило правила / знания о системе / проверки в CI / требования в спеке / другое.
+
+## Итоги недели
+- MR с изменениями агента: [число]
+- Из них приняты без ручной доработки: [число]
+- Изменения в harness за неделю: [список ссылок на MR]
+- Что повторилось с прошлой недели: [список]</code></pre>
+<p>Строка «Что повторилось с прошлой недели» показывает, работает ли разбор. Если одни и те же причины повторяются, правки в harness не доходят до агента: правило слишком общее, файл слишком длинный или нужна автоматическая проверка вместо правила.</p>
+
+<h2 id="announce">Письмо команде о запуске пилота</h2>
+<p>Пилот, о котором команда узнаёт из слухов, воспринимается как подготовка к сокращениям. Письмо отправляет спонсор пилота до диагностики. В нём три вещи: зачем, что будет и как будут использоваться метрики.</p>
+<pre data-copy><code>Коллеги, привет.
+
+С [дата] команда [название] три месяца работает в пилоте: мы перестраиваем процесс так, чтобы AI-агенты делали задачи от спеки до MR, а люди ставили рамки и принимали результат.
+
+Зачем: задачи у нас пишутся быстрее, а до релиза доходят с прежней скоростью. Хотим проверить, можно ли это изменить, и измерить результат.
+
+Что будет:
+- две недели снимаем текущие метрики и разбираем процесс;
+- собираем правила, шаблоны спек и проверки для агентов;
+- [дата] — воркшоп на ваших задачах, после него работаем по новому процессу;
+- раз в неделю разбираем, где агент ошибся, и чиним причину;
+- через три месяца сравниваем метрики со стартом.
+
+Что важно:
+- на время пилота KPI по дефектам для команды отключены;
+- метрики описывают процесс, оценивать по ним людей не будем;
+- решения о дальнейших шагах примем по результатам, вместе с командой.
+
+Вопросы — мне или [имя].</code></pre>
+
+<div class="a-prx">
+  <h3>Пилот с Праксором</h3>
+  <p>Проводим пилот по этим шаблонам вместе с вашей командой: стартовый замер на диагностике, первая версия harness, воркшоп на ваших задачах, еженедельные разборы в сопровождении и ревью с метриками против старта. <a href="/#program">Как проходит программа</a></p>
+</div>
+
+<h2 id="faq">Вопросы</h2>
+<div class="a-faq">
+<h3 data-q>Как снять DORA-метрики, если нет доступа к CI?</h3>
+<p>Частоту релизов, lead time до тега или мержа и размер изменений можно посчитать по истории git скриптом с этой страницы. Долю неудачных изменений и время восстановления git не покажет, для них нужны данные системы инцидентов.</p>
+<h3 data-q>Что написать в политике использования AI для разработчиков?</h3>
+<p>Разрешённые инструменты, какие данные нельзя отправлять во внешние модели, кто отвечает за код от агента, чего компания ждёт от разработчиков и как будут использоваться метрики. Достаточно одной страницы.</p>
+<h3 data-q>Чем спека для агента отличается от обычного тикета?</h3>
+<p>В ней есть проверяемые критерии приёмки, явные границы изменения и список того, что не входит в задачу. Агент по ним понимает, где остановиться, а человек — как принять результат.</p>
+<h3 data-q>Безопасно ли запускать скрипт на рабочем репозитории?</h3>
+<p>Да. Скрипт только читает историю через git log и git diff, ничего не меняет в репозитории и не обращается к сети. Код открыт, его можно прочитать перед запуском.</p>
+</div>
+
+<script>
+(function () {
+  var blocks = document.querySelectorAll('pre[data-copy]');
+  for (var i = 0; i < blocks.length; i++) (function (pre) {
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'a-copy';
+    btn.textContent = 'Скопировать';
+    btn.addEventListener('click', function () {
+      var text = pre.querySelector('code').innerText;
+      var done = function () { btn.textContent = 'Скопировано'; setTimeout(function () { btn.textContent = 'Скопировать'; }, 1600); };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, function () {});
+      else { var t = document.createElement('textarea'); t.value = text; document.body.appendChild(t); t.select(); try { document.execCommand('copy'); done(); } catch (e) {} t.remove(); }
+    });
+    pre.parentNode.insertBefore(btn, pre);
+  })(blocks[i]);
+})();
+</script>
+
+<div class="a-next"><div class="a-next-t">Читать дальше</div><a href="/vnedrenie-ii-v-razrabotku/">Как внедрить ИИ в разработку: план на 3 месяца<span>План внедрения ИИ-агентов в разработку ПО на пилотной команде: что говорят исследования, чек-лист готовности, этапы по неделям, роли, политика использования AI, замер эффекта и причины, по которым пилоты проваливаются.</span></a><a href="/dora-metrics/">DORA-метрики: как измерить скорость и стабильность релизов<span>Пять DORA-метрик: lead time, частота релизов, доля неудачных изменений, время восстановления и rework rate. Как их считать по Git и CI, какие ошибки допускают при замере.</span></a><a href="/spec-driven-development/">Spec-driven development: разработка по спецификации с AI-агентами<span>Как работает spec-driven development, что писать в спецификации для агента, чем отличаются GitHub Spec Kit и Kiro и как совместить спеки с Jira.</span></a></div>
+    </article>
+    </div>
+  </div>
+  </main>
+
+  <section id="request" style="background: #0E1116; color: #FBFAF8;">
+    <div class="v2-pad v2-sec" style="max-width: 1280px; margin: 0 auto; padding: 128px 40px;">
+      <div class="v2-split" style="display: grid; grid-template-columns: 6fr 6fr; gap: 72px; align-items: start;">
+        <div>
+          <h2 class="v2-h2" style="font-size: 44px; font-weight: 400; line-height: 1.08; letter-spacing: -1.4px; margin: 0; max-width: 20ch; text-wrap: pretty;">Начнём с разговора о вашей команде</h2>
+          <p style="font-size: 17px; line-height: 1.65; color: rgba(251,250,248,0.68); margin: 28px 0 0; max-width: 52ch; text-wrap: pretty;">На первом созвоне разбираем, как сейчас устроена постановка задач и разработка, где AI уже используется, и что можно измерить. После созвона будет понятно, какой Harness собирать и с какой команды начать.</p>
+          <div style="margin-top: 40px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(251,250,248,0.8);">
+            <div style="padding: 14px 0; border-top: 1px solid rgba(251,250,248,0.2);">Созвон 45 минут, без обязательств</div>
+            <div style="padding: 14px 0; border-top: 1px solid rgba(251,250,248,0.2);">Отвечает один из основателей</div>
+            <div style="padding: 14px 0; border-top: 1px solid rgba(251,250,248,0.2); border-bottom: 1px solid rgba(251,250,248,0.2);">Можно под NDA</div>
+          </div>
+        </div>
+        <div style="background: #FBFAF8; color: #0E1116; padding: 40px;">
+          <div id="form-success" style="display: none; padding: 40px 0;">
+            <div style="font-size: 28px; font-weight: 400; letter-spacing: -0.7px; margin-top: 18px;">Заявка отправлена</div>
+            <p style="font-size: 16px; line-height: 1.6; color: #3A4149; margin: 14px 0 0;">Свяжемся в течение одного рабочего дня. Если удобнее сразу написать — <a href="mailto:hello@praxor.ru">hello@praxor.ru</a>.</p>
+          </div>
+          <div id="form-body">
+            <div style="font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.09em; text-transform: uppercase; color: #8B939C;">Оставить заявку</div>
+            <div style="font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; color: #8B939C; margin-top: 32px;">Что вам нужно</div>
+            <div style="margin-top: 12px;">
+              <button type="button" class="intent-opt" data-intent="Диагностика" aria-pressed="true">
+                <span style="display: block; font-size: 16px; font-weight: 500; letter-spacing: -0.2px;">Диагностика</span>
+                <span style="display: block; font-size: 14px; line-height: 1.45; color: #5B646E; margin-top: 4px;">2 недели: архитектура, процессы, стартовые метрики</span>
+              </button>
+              <button type="button" class="intent-opt" data-intent="Воркшоп" aria-pressed="false">
+                <span style="display: block; font-size: 16px; font-weight: 500; letter-spacing: -0.2px;">Воркшоп с командой</span>
+                <span style="display: block; font-size: 14px; line-height: 1.45; color: #5B646E; margin-top: 4px;">Запуск на реальных задачах из вашего бэклога</span>
+              </button>
+              <button type="button" class="intent-opt" data-intent="Консультация" aria-pressed="false">
+                <span style="display: block; font-size: 16px; font-weight: 500; letter-spacing: -0.2px;">Консультация</span>
+                <span style="display: block; font-size: 14px; line-height: 1.45; color: #5B646E; margin-top: 4px;">Разобрать ситуацию и понять, с чего начинать</span>
+              </button>
+            </div>
+            <div style="display: grid; gap: 18px; margin-top: 32px;">
+              <label style="display: block;">
+                <span style="display: block; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; color: #8B939C; margin-bottom: 8px;">Имя</span>
+                <input id="f-name" placeholder="Как к вам обращаться" style="width: 100%; background: transparent; border: none; border-bottom: 1px solid #0E1116; border-radius: 0; padding: 8px 0; font-size: 16px; color: #0E1116; outline: none;" />
+              </label>
+              <label style="display: block;">
+                <span style="display: block; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; color: #8B939C; margin-bottom: 8px;">Компания и ваша роль</span>
+                <input id="f-company" placeholder="Например: финтех, 120 разработчиков, CTO" style="width: 100%; background: transparent; border: none; border-bottom: 1px solid #0E1116; border-radius: 0; padding: 8px 0; font-size: 16px; color: #0E1116; outline: none;" />
+              </label>
+              <label style="display: block;">
+                <span style="display: block; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; color: #8B939C; margin-bottom: 8px;">Email или Telegram</span>
+                <input id="f-contact" placeholder="для связи" style="width: 100%; background: transparent; border: none; border-bottom: 1px solid #0E1116; border-radius: 0; padding: 8px 0; font-size: 16px; color: #0E1116; outline: none;" />
+              </label>
+              <label style="display: block;">
+                <span style="display: block; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; color: #8B939C; margin-bottom: 8px;">Контекст задачи, необязательно</span>
+                <textarea id="f-note" rows="3" placeholder="Что уже пробовали, что не складывается" style="width: 100%; background: transparent; border: 1px solid #E2DFDA; border-radius: 0; padding: 12px; font-size: 16px; color: #0E1116; outline: none; resize: vertical;"></textarea>
+              </label>
+            </div>
+            <div id="f-error" style="display: none; margin-top: 24px; border-left: 3px solid #B45309; padding: 12px 0 12px 15px; font-size: 14px; line-height: 1.5; color: #0E1116;"></div>
+            <button id="f-submit" type="button" class="cta-dark" style="width: 100%; margin-top: 32px; background: #0E1116; color: #FBFAF8; border: none; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; padding: 17px 24px; cursor: pointer;">Отправить заявку</button>
+            <div style="font-size: 13px; line-height: 1.5; color: #5B646E; margin-top: 14px;">Отправляя форму, вы соглашаетесь на обработку контактных данных для связи по вашему запросу.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="v2-pad" style="max-width: 1280px; margin: 0 auto; padding: 0 40px; border-left: 1px solid #E2DFDA; border-right: 1px solid #E2DFDA;">
+    <div style="padding: 56px 0 28px;">
+      <div class="v2-split" style="display: grid; grid-template-columns: 5fr 3fr 4fr; gap: 40px; align-items: start;">
+        <div>
+          <div style="display: flex; align-items: center;">
+            <svg viewBox="0 -12.68 90.15 15.08" width="90.15" height="15.08" role="img" aria-label="Праксор" style="display: block;"><g transform="translate(0 -12.68)"><rect x="0.75" y="0.75" width="12.5" height="12.5" fill="none" stroke="#0E1116" stroke-width="1.5"/><rect x="4.5" y="4.5" width="5" height="5" fill="#1B4DE4"/></g><path d="M1.38 0L1.38 -11.36L10.08 -11.36L10.08 0L8.35 0L8.35 -9.78L3.1 -9.78L3.1 0L1.38 0ZM12.36 2.4L12.36 -8.51L13.96 -8.51L14 -6.69L13.81 -6.78Q14.13 -7.73 14.87 -8.22Q15.6 -8.7 16.56 -8.7Q17.81 -8.7 18.62 -8.09Q19.43 -7.47 19.82 -6.46Q20.21 -5.46 20.21 -4.26Q20.21 -3.06 19.82 -2.05Q19.43 -1.04 18.62 -0.42Q17.81 0.19 16.56 0.19Q15.92 0.19 15.36 -0.03Q14.8 -0.26 14.41 -0.66Q14.02 -1.07 13.86 -1.63L14.05 -1.82L14.05 2.4L12.36 2.4ZM16.26 -1.28Q17.28 -1.28 17.87 -2.06Q18.45 -2.85 18.45 -4.26Q18.45 -5.66 17.87 -6.45Q17.28 -7.23 16.26 -7.23Q15.59 -7.23 15.09 -6.9Q14.6 -6.58 14.32 -5.9Q14.05 -5.23 14.05 -4.26Q14.05 -3.28 14.32 -2.61Q14.58 -1.94 15.08 -1.61Q15.59 -1.28 16.26 -1.28ZM24.17 0.19Q22.84 0.19 22.05 -0.42Q21.26 -1.02 21.26 -2.13Q21.26 -3.23 21.92 -3.85Q22.58 -4.46 23.98 -4.74L26.9 -5.3Q26.9 -6.29 26.44 -6.78Q25.98 -7.26 25.06 -7.26Q24.25 -7.26 23.78 -6.9Q23.32 -6.54 23.14 -5.84L21.4 -5.95Q21.64 -7.23 22.59 -7.97Q23.54 -8.7 25.06 -8.7Q26.79 -8.7 27.7 -7.78Q28.6 -6.86 28.6 -5.2L28.6 -1.89Q28.6 -1.58 28.7 -1.46Q28.81 -1.34 29.05 -1.34L29.35 -1.34L29.35 0Q29.27 0.02 29.1 0.03Q28.92 0.05 28.73 0.05Q28.18 0.05 27.79 -0.13Q27.4 -0.3 27.21 -0.71Q27.02 -1.12 27.02 -1.81L27.19 -1.73Q27.06 -1.17 26.64 -0.74Q26.22 -0.3 25.57 -0.06Q24.92 0.19 24.17 0.19ZM24.44 -1.15Q25.21 -1.15 25.75 -1.45Q26.3 -1.74 26.6 -2.27Q26.9 -2.8 26.9 -3.47L26.9 -4.02L24.41 -3.54Q23.64 -3.39 23.33 -3.08Q23.02 -2.77 23.02 -2.29Q23.02 -1.74 23.39 -1.45Q23.77 -1.15 24.44 -1.15ZM36.09 0L32.04 -4.24L35.93 -8.51L38.01 -8.51L33.98 -4.26L38.17 0L36.09 0ZM30.52 0L30.52 -8.51L32.22 -8.51L32.22 0L30.52 0ZM43.31 0.19Q42.1 0.19 41.18 -0.35Q40.27 -0.9 39.78 -1.9Q39.28 -2.91 39.28 -4.26Q39.28 -5.6 39.78 -6.6Q40.27 -7.6 41.18 -8.15Q42.1 -8.7 43.31 -8.7Q44.35 -8.7 45.16 -8.34Q45.97 -7.98 46.47 -7.3Q46.98 -6.61 47.12 -5.62L45.34 -5.52Q45.22 -6.35 44.67 -6.79Q44.13 -7.23 43.31 -7.23Q42.24 -7.23 41.64 -6.44Q41.04 -5.65 41.04 -4.26Q41.04 -2.86 41.64 -2.07Q42.24 -1.28 43.31 -1.28Q44.13 -1.28 44.67 -1.74Q45.22 -2.19 45.34 -3.12L47.12 -3.02Q46.98 -2.05 46.47 -1.33Q45.97 -0.61 45.16 -0.21Q44.35 0.19 43.31 0.19ZM52.02 0.19Q50.8 0.19 49.89 -0.35Q48.98 -0.9 48.48 -1.9Q47.99 -2.91 47.99 -4.26Q47.99 -5.62 48.48 -6.61Q48.98 -7.6 49.89 -8.15Q50.8 -8.7 52.02 -8.7Q53.24 -8.7 54.15 -8.15Q55.06 -7.6 55.56 -6.61Q56.05 -5.62 56.05 -4.26Q56.05 -2.91 55.56 -1.9Q55.06 -0.9 54.15 -0.35Q53.24 0.19 52.02 0.19ZM52.02 -1.28Q53.11 -1.28 53.7 -2.07Q54.29 -2.86 54.29 -4.26Q54.29 -5.65 53.7 -6.44Q53.11 -7.23 52.02 -7.23Q50.95 -7.23 50.35 -6.44Q49.75 -5.65 49.75 -4.26Q49.75 -2.86 50.35 -2.07Q50.95 -1.28 52.02 -1.28ZM57.62 2.4L57.62 -8.51L59.22 -8.51L59.27 -6.69L59.08 -6.78Q59.4 -7.73 60.14 -8.22Q60.87 -8.7 61.83 -8.7Q63.08 -8.7 63.89 -8.09Q64.7 -7.47 65.09 -6.46Q65.48 -5.46 65.48 -4.26Q65.48 -3.06 65.09 -2.05Q64.7 -1.04 63.89 -0.42Q63.08 0.19 61.83 0.19Q61.19 0.19 60.63 -0.03Q60.07 -0.26 59.68 -0.66Q59.29 -1.07 59.13 -1.63L59.32 -1.82L59.32 2.4L57.62 2.4ZM61.53 -1.28Q62.55 -1.28 63.14 -2.06Q63.72 -2.85 63.72 -4.26Q63.72 -5.66 63.14 -6.45Q62.55 -7.23 61.53 -7.23Q60.86 -7.23 60.36 -6.9Q59.86 -6.58 59.59 -5.9Q59.32 -5.23 59.32 -4.26Q59.32 -3.28 59.58 -2.61Q59.85 -1.94 60.35 -1.61Q60.86 -1.28 61.53 -1.28Z" transform="translate(24 0)" fill="#0E1116"/></svg>
+          </div>
+          <p style="font-size: 15px; line-height: 1.6; color: #3A4149; margin: 16px 0 0; max-width: 42ch;">Внедряем AI SDLC в инженерных командах: диагностика, проектирование, внедрение, сопровождение, замер результата.</p>
+          <div style="margin-top: 24px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; line-height: 2; letter-spacing: 0.04em;">
+            <div style="color: #8B939C; text-transform: uppercase; letter-spacing: 0.09em;">Материалы</div>
+            <div><a href="/vnedrenie-ii-v-razrabotku/">Внедрение ИИ в разработку</a></div>
+            <div><a href="/ai-sdlc/">AI SDLC</a></div>
+            <div><a href="/harness-engineering/">Harness engineering</a></div>
+            <div><a href="/spec-driven-development/">Spec-driven development</a></div>
+            <div><a href="/agents-md/">AGENTS.md</a></div>
+            <div><a href="/dora-metrics/">DORA-метрики</a></div>
+            <div><a href="/ai-sdlc/#all">Все материалы</a></div>
+          </div>
+        </div>
+        <div style="font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; line-height: 2; letter-spacing: 0.04em;">
+          <div style="color: #8B939C; text-transform: uppercase; letter-spacing: 0.09em;">Связаться</div>
+          <div><a href="mailto:hello@praxor.ru">hello@praxor.ru</a></div>
+          <div><a href="#request">Оставить заявку</a></div>
+        </div>
+        <div style="font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; line-height: 2; letter-spacing: 0.04em; color: #3A4149;">
+          <div style="color: #8B939C; text-transform: uppercase; letter-spacing: 0.09em;">Реквизиты</div>
+          <div>ИП Уразбаев Асхат Орынбасарович</div>
+          <div>ИНН 502506471139</div>
+          <div>ОГРНИП 321774600743669</div>
+        </div>
+      </div>
+      <div style="margin-top: 44px; padding-top: 20px; border-top: 1px solid #E2DFDA; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; color: #8B939C;">© 2026 Праксор</div>
+    </div>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var WEBHOOK = 'https://hook.eu1.make.com/vnnuiexjx76j3f51vrftbgwtefeoscce';
+  var UTM_KEY = 'praxor_utm';
+  var UTM_FIELDS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'];
+  var LANDING_VERSION = 'praxxor_v1_article';
+
+  try {
+    var q = new URLSearchParams(location.search), fromUrl = {}, any = false;
+    UTM_FIELDS.forEach(function (f) { var v = q.get(f); if (v) { fromUrl[f] = v; any = true; } });
+    if (any && !localStorage.getItem(UTM_KEY)) localStorage.setItem(UTM_KEY, JSON.stringify(fromUrl));
+  } catch (e) {}
+
+  function utm() {
+    var stored = {};
+    try { stored = JSON.parse(localStorage.getItem(UTM_KEY) || '{}') || {}; } catch (e) {}
+    var out = {};
+    UTM_FIELDS.forEach(function (f) { out[f] = stored[f] || ''; });
+    return out;
+  }
+
+  var intent = 'Диагностика';
+  var opts = [].slice.call(document.querySelectorAll('.intent-opt'));
+  opts.forEach(function (b) {
+    b.addEventListener('click', function () {
+      intent = b.getAttribute('data-intent');
+      opts.forEach(function (o) { o.setAttribute('aria-pressed', o === b ? 'true' : 'false'); });
+    });
+  });
+
+  var btn = document.getElementById('f-submit');
+  var errBox = document.getElementById('f-error');
+  var sending = false;
+
+  function showError(msg) {
+    errBox.textContent = msg;
+    errBox.style.display = 'block';
+  }
+
+  btn.addEventListener('click', async function () {
+    if (sending) return;
+    var name = document.getElementById('f-name').value.trim();
+    var company = document.getElementById('f-company').value.trim();
+    var contact = document.getElementById('f-contact').value.trim();
+    var note = document.getElementById('f-note').value.trim();
+    if (!name || !contact) { showError('Заполните имя и контакт для связи.'); return; }
+
+    sending = true;
+    btn.textContent = 'Отправляем…';
+    errBox.style.display = 'none';
+
+    var payload = Object.assign({
+      name: name,
+      company_role: company,
+      contact: contact,
+      request_type: intent,
+      message: note,
+      page_url: location.href,
+      landing_version: LANDING_VERSION
+    }, utm());
+    var body = JSON.stringify(payload);
+    var headers = { 'Content-Type': 'text/plain;charset=UTF-8' };
+
+    function done() {
+      try { ym(112577477, 'reachGoal', 'lead', { request_type: intent }); } catch (e) {}
+      document.getElementById('form-body').style.display = 'none';
+      document.getElementById('form-success').style.display = 'block';
+    }
+    function fail() {
+      sending = false;
+      btn.textContent = 'Отправить заявку';
+      showError('Не удалось отправить заявку. Попробуйте ещё раз или напишите на hello@praxor.ru.');
+    }
+
+    try {
+      var res = await fetch(WEBHOOK, { method: 'POST', headers: headers, body: body });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      done();
+    } catch (e) {
+      try {
+        await fetch(WEBHOOK, { method: 'POST', mode: 'no-cors', headers: headers, body: body });
+        done();
+      } catch (e2) {
+        var queued = false;
+        try { queued = !!(navigator.sendBeacon && navigator.sendBeacon(WEBHOOK, new Blob([body], { type: 'text/plain;charset=UTF-8' }))); } catch (e3) {}
+        queued ? done() : fail();
+      }
+    }
+  });
+})();
+</script>
+</body>
+</html>

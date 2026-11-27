@@ -180,7 +180,7 @@ def related(p):
 
 # Каталог материалов на странице-хабе /ai-sdlc/
 CATALOG = [
-    ("Внедрение", ["vnedrenie-ii-v-razrabotku"]),
+    ("Внедрение", ["vnedrenie-ii-v-razrabotku", "ai-pilot-templates"]),
     ("Подход", ["harness-engineering", "spec-driven-development", "agentic-development",
                 "context-engineering", "multi-agent-development"]),
     ("Практики", ["agents-md", "agents-md-templates", "claude-md", "ai-code-review", "ai-test-generation", "llm-gateway"]),
